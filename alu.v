@@ -22,12 +22,13 @@ module alu (
     output wire        zero         // Zero condition flag (asserted 1 when result is zero)
 );
 
-    // ALU Operation Encodings - Exact match with alu_control.v
+    // ALU Operation Encodings - Exact match with alu_control.v uses local param so taht this can be changes outside and we just assigned  a bits value a variable 
     localparam ALU_AND = 4'b0000;
     localparam ALU_OR  = 4'b0001;
     localparam ALU_ADD = 4'b0010;
     localparam ALU_SUB = 4'b0110;
     localparam ALU_SLT = 4'b0111;
+    // slt set less than
 
     // Combinational ALU Computation
     always @(*) begin
@@ -55,12 +56,17 @@ module alu (
                 // Signed comparison for Set on Less Than (SLT)
                 // In Verilog-2001, $signed treats 32-bit operands as two's complement numbers
                 if ($signed(a) < $signed(b)) begin
+
+                // signed - infi to infi
+
                     result = 32'h0000_0001;
                 end else begin
                     result = 32'h0000_0000;
                 end
             end
 
+
+        // default 0 kar diya
             default: begin
                 // Safe default for undefined control codes
                 result = 32'h0000_0000;
@@ -69,6 +75,7 @@ module alu (
     end
 
     // Zero Flag Generation: Asserted when result equals 0 (used for BEQ branch decision)
+    // beq keh liye agar result 0 aaaya toh  zero flag = 1.
     assign zero = (result == 32'h0000_0000) ? 1'b1 : 1'b0;
 
 endmodule
