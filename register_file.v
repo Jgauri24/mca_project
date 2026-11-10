@@ -54,21 +54,19 @@ module register_file (
         end
     end
 
-    // Asynchronous (Combinational) Read Ports using simple if-else
+    // Asynchronous (Combinational) Read Ports
     always @(*) begin
         // Read Port 1
-        if (read_reg1 == 5'd0) begin
-            read_data1 = 32'h0000_0000;
-        end else begin
+        if (read_reg1 == 0)
+            read_data1 = 0;
+        else
             read_data1 = registers[read_reg1];
-        end
 
         // Read Port 2
-        if (read_reg2 == 5'd0) begin
-            read_data2 = 32'h0000_0000;
-        end else begin
+        if (read_reg2 == 0)
+            read_data2 = 0;
+        else
             read_data2 = registers[read_reg2];
-        end
     end
 
 endmodule
