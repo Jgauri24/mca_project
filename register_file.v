@@ -55,9 +55,9 @@ module register_file (
     end
 
     // Asynchronous (Combinational) Read Ports
-    // Register $0 is hardwired to 0; any read from $0 returns 32'h0000_0000
-    assign read_data1 = (read_reg1 == 5'd0) ? 32'h0000_0000 : registers[read_reg1];
-    assign read_data2 = (read_reg2 == 5'd0) ? 32'h0000_0000 : registers[read_reg2];
+    // registers[0] is permanently 0 because it starts at 0 and writes to $0 are blocked
+    assign read_data1 = registers[read_reg1];
+    assign read_data2 = registers[read_reg2];
 
 endmodule
 
