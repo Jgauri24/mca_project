@@ -25,8 +25,8 @@ module register_file (
     input  wire [4:0]  read_reg2,  // 5-bit source register 2 address (rt)
     input  wire [4:0]  write_reg,  // 5-bit destination register address (rd or rt)
     input  wire [31:0] write_data, // 32-bit data to write
-    output wire [31:0] read_data1, // 32-bit data output from read port 1
-    output wire [31:0] read_data2  // 32-bit data output from read port 2
+    output reg  [31:0] read_data1, // 32-bit data output from read port 1
+    output reg  [31:0] read_data2  // 32-bit data output from read port 2
 );
 
     // 32 registers of 32-bit width
@@ -54,10 +54,22 @@ module register_file (
         end
     end
 
-    // Asynchronous (Combinational) Read Ports
-    // registers[0] is permanently 0 because it starts at 0 and writes to $0 are blocked
-    assign read_data1 = registers[read_reg1];
-    assign read_data2 = registers[read_reg2];
+    // Asynchronous (Combinational) Read Ports using simple if-else
+    always @(*) begin
+        // Read Port 1
+        if (read_reg1 == 5'd0) begin
+            read_data1 = 32'h0000_0000;
+        end else begin
+            read_data1 = registers[read_reg1];
+        end
+
+        // Read Port 2
+        if (read_reg2 == 5'd0) begin
+            read_data2 = 32'h0000_0000;
+        end else begin
+            read_data2 = registers[read_reg2];
+        end
+    end
 
 endmodule
 
