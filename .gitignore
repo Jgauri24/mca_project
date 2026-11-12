@@ -1,0 +1,7 @@
+# Simulation artifacts
+*.vcd
+*.out
+sim_*
+a.out
+.DS_Store
+
