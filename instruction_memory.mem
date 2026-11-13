@@ -1,0 +1,15 @@
+// ============================================================================
+// File: instruction_memory.mem
+// Description: Sample MIPS program for instruction_memory.v ($readmemh format)
+// Lead: Member 3 (Memory Subsystem)
+// Format: one 32-bit hexadecimal instruction per line, loaded from memory[0]
+// Uses only opcodes supported by control_unit.v (R-type, LW, SW, ADDI, BEQ, J)
+// ============================================================================
+20080005 // [0x00] addi $t0, $zero, 5       -> $t0 = 5
+2009000A // [0x04] addi $t1, $zero, 10      -> $t1 = 10
+01095020 // [0x08] add  $t2, $t0, $t1       -> $t2 = 15
+AC0A0000 // [0x0C] sw   $t2, 0($zero)       -> MEM[0] = 15
+8C0B0000 // [0x10] lw   $t3, 0($zero)       -> $t3 = MEM[0] = 15
+114B0001 // [0x14] beq  $t2, $t3, +1        -> taken, skip next instruction
+01286022 // [0x18] sub  $t4, $t1, $t0       -> skipped by the branch
+08000007 // [0x1C] j    0x1C                -> infinite loop (end of program)
