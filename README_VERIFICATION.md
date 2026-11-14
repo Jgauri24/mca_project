@@ -39,3 +39,7 @@ The current `mips_cpu` RTL does not connect reset to the register file or data m
 - A wrong `debug_instruction` suggests program loading or PC/fetch trouble; a wrong register result with a correct instruction suggests control, ALU, or writeback trouble.
 - A correct register result with incorrect data memory usually points to SW control or address mapping.
 - Inspect `tb_mips_cpu.vcd` with GTKWave to follow PC, instruction, and registers.
+
+## Synthesis
+
+A generic Yosys synthesis report for `mips_cpu` is in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md). It records the Yosys version, command, generic cell counts, limitations, and the unconnected register-file/data-memory reset ports. It is not a vendor-specific FPGA fit or timing report.
