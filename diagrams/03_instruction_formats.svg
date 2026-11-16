@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 760" width="1240" height="760" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1240" height="760" fill="#ffffff"/>
+  <text x="620" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Supported MIPS32 Instruction Formats</text>
+
+  <!-- 30 px per bit, start x=220 -->
+  <!-- R-type -->
+  <text x="30" y="128" font-size="20" font-weight="bold" fill="#0f172a">R-type</text>
+  <g font-size="12" fill="#64748b" text-anchor="middle">
+    <text x="310" y="88">31 – 26</text><text x="475" y="88">25 – 21</text><text x="625" y="88">20 – 16</text>
+    <text x="775" y="88">15 – 11</text><text x="925" y="88">10 – 6</text><text x="1090" y="88">5 – 0</text>
+  </g>
+  <g stroke="#334155" stroke-width="2">
+    <rect x="220" y="96" width="180" height="50" fill="#dbeafe"/>
+    <rect x="400" y="96" width="150" height="50" fill="#dcfce7"/>
+    <rect x="550" y="96" width="150" height="50" fill="#dcfce7"/>
+    <rect x="700" y="96" width="150" height="50" fill="#dcfce7"/>
+    <rect x="850" y="96" width="150" height="50" fill="#f1f5f9"/>
+    <rect x="1000" y="96" width="180" height="50" fill="#ffedd5"/>
+  </g>
+  <g font-size="16" font-weight="bold" text-anchor="middle" fill="#0f172a">
+    <text x="310" y="127">opcode (6)</text><text x="475" y="127">rs (5)</text><text x="625" y="127">rt (5)</text>
+    <text x="775" y="127">rd (5)</text><text x="925" y="127">shamt (5)</text><text x="1090" y="127">funct (6)</text>
+  </g>
+  <text x="220" y="172" font-size="14" fill="#334155">add, sub, and, or, slt  –  rd = rs (op) rt    ·  opcode = 000000, operation chosen by funct</text>
+
+  <!-- I-type -->
+  <text x="30" y="262" font-size="20" font-weight="bold" fill="#0f172a">I-type</text>
+  <g font-size="12" fill="#64748b" text-anchor="middle">
+    <text x="310" y="222">31 – 26</text><text x="475" y="222">25 – 21</text><text x="625" y="222">20 – 16</text><text x="940" y="222">15 – 0</text>
+  </g>
+  <g stroke="#334155" stroke-width="2">
+    <rect x="220" y="230" width="180" height="50" fill="#dbeafe"/>
+    <rect x="400" y="230" width="150" height="50" fill="#dcfce7"/>
+    <rect x="550" y="230" width="150" height="50" fill="#dcfce7"/>
+    <rect x="700" y="230" width="480" height="50" fill="#ffedd5"/>
+  </g>
+  <g font-size="16" font-weight="bold" text-anchor="middle" fill="#0f172a">
+    <text x="310" y="261">opcode (6)</text><text x="475" y="261">rs (5)</text><text x="625" y="261">rt (5)</text><text x="940" y="261">immediate / offset (16)</text>
+  </g>
+  <text x="220" y="306" font-size="14" fill="#334155">lw, sw, addi, beq  –  immediate is sign-extended to 32 bits</text>
+
+  <!-- J-type -->
+  <text x="30" y="396" font-size="20" font-weight="bold" fill="#0f172a">J-type</text>
+  <g font-size="12" fill="#64748b" text-anchor="middle">
+    <text x="310" y="356">31 – 26</text><text x="790" y="356">25 – 0</text>
+  </g>
+  <g stroke="#334155" stroke-width="2">
+    <rect x="220" y="364" width="180" height="50" fill="#dbeafe"/>
+    <rect x="400" y="364" width="780" height="50" fill="#ffedd5"/>
+  </g>
+  <g font-size="16" font-weight="bold" text-anchor="middle" fill="#0f172a">
+    <text x="310" y="395">opcode (6)</text><text x="790" y="395">jump target index (26)</text>
+  </g>
+  <text x="220" y="440" font-size="14" fill="#334155">j  –  new PC = { (PC+4)[31:28], index, 00 }</text>
+
+  <!-- table -->
+  <g transform="translate(60,480)" font-size="14" fill="#0f172a">
+    <rect width="1120" height="250" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+    <rect width="1120" height="40" rx="8" fill="#334155"/><rect y="30" width="1120" height="10" fill="#334155"/>
+    <g fill="#fff" font-weight="bold">
+      <text x="20" y="26">Instruction</text><text x="160" y="26">Type</text><text x="250" y="26">Opcode</text>
+      <text x="370" y="26">funct</text><text x="470" y="26">Meaning</text>
+    </g>
+    <g font-family="Menlo, Consolas, monospace" font-size="13">
+      <text x="20" y="64">add / sub</text><text x="160" y="64">R</text><text x="250" y="64">0x00</text><text x="370" y="64">0x20 / 0x22</text><text x="470" y="64" font-family="Helvetica, Arial, sans-serif">rd = rs + rt  /  rd = rs − rt</text>
+      <text x="20" y="90">and / or</text><text x="160" y="90">R</text><text x="250" y="90">0x00</text><text x="370" y="90">0x24 / 0x25</text><text x="470" y="90" font-family="Helvetica, Arial, sans-serif">rd = rs AND rt  /  rd = rs OR rt</text>
+      <text x="20" y="116">slt</text><text x="160" y="116">R</text><text x="250" y="116">0x00</text><text x="370" y="116">0x2A</text><text x="470" y="116" font-family="Helvetica, Arial, sans-serif">rd = 1 if rs &lt; rt (signed), else 0</text>
+      <text x="20" y="142">lw</text><text x="160" y="142">I</text><text x="250" y="142">0x23</text><text x="370" y="142">–</text><text x="470" y="142" font-family="Helvetica, Arial, sans-serif">rt = Memory[rs + offset]</text>
+      <text x="20" y="168">sw</text><text x="160" y="168">I</text><text x="250" y="168">0x2B</text><text x="370" y="168">–</text><text x="470" y="168" font-family="Helvetica, Arial, sans-serif">Memory[rs + offset] = rt</text>
+      <text x="20" y="194">addi</text><text x="160" y="194">I</text><text x="250" y="194">0x08</text><text x="370" y="194">–</text><text x="470" y="194" font-family="Helvetica, Arial, sans-serif">rt = rs + immediate</text>
+      <text x="20" y="220">beq / j</text><text x="160" y="220">I / J</text><text x="250" y="220">0x04 / 0x02</text><text x="370" y="220">–</text><text x="470" y="220" font-family="Helvetica, Arial, sans-serif">if rs == rt: PC = PC+4+(offset×4)  /  PC = jump target</text>
+    </g>
+  </g>
+</svg>

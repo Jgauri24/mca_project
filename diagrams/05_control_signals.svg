@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 480" width="1300" height="480" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1300" height="480" fill="#ffffff"/>
+  <text x="650" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Control Unit Truth Table (control_unit.v + alu_control.v)</text>
+
+  <!-- columns: 11 cols -->
+  <g transform="translate(30,64)">
+    <rect width="1240" height="50" fill="#1e3a8a" rx="6"/>
+    <g fill="#fff" font-size="14" font-weight="bold" text-anchor="middle">
+      <text x="70" y="31">Instruction</text><text x="190" y="31">Opcode</text>
+      <text x="300" y="31">RegDst</text><text x="400" y="31">RegWrite</text><text x="500" y="31">ALUSrc</text>
+      <text x="600" y="31">ALUOp</text><text x="700" y="31">MemRead</text><text x="800" y="31">MemWrite</text>
+      <text x="905" y="31">MemToReg</text><text x="1005" y="31">Branch</text><text x="1100" y="31">Jump</text><text x="1190" y="31">ALU op</text>
+    </g>
+    <g font-size="15" text-anchor="middle" font-family="Menlo, Consolas, monospace" fill="#0f172a">
+      <rect y="50" width="1240" height="46" fill="#f8fafc"/>
+      <text x="70" y="80" font-family="Helvetica, Arial, sans-serif" font-weight="bold">R-type</text><text x="190" y="80">000000</text>
+      <text x="300" y="80">1</text><text x="400" y="80">1</text><text x="500" y="80">0</text><text x="600" y="80">10</text>
+      <text x="700" y="80">0</text><text x="800" y="80">0</text><text x="905" y="80">0</text><text x="1005" y="80">0</text><text x="1100" y="80">0</text><text x="1190" y="80" font-family="Helvetica, Arial, sans-serif">by funct</text>
+
+      <text x="70" y="126" font-family="Helvetica, Arial, sans-serif" font-weight="bold">lw</text><text x="190" y="126">100011</text>
+      <text x="300" y="126">0</text><text x="400" y="126">1</text><text x="500" y="126">1</text><text x="600" y="126">00</text>
+      <text x="700" y="126">1</text><text x="800" y="126">0</text><text x="905" y="126">1</text><text x="1005" y="126">0</text><text x="1100" y="126">0</text><text x="1190" y="126" font-family="Helvetica, Arial, sans-serif">ADD</text>
+
+      <rect y="142" width="1240" height="46" fill="#f8fafc"/>
+      <text x="70" y="172" font-family="Helvetica, Arial, sans-serif" font-weight="bold">sw</text><text x="190" y="172">101011</text>
+      <text x="300" y="172">X</text><text x="400" y="172">0</text><text x="500" y="172">1</text><text x="600" y="172">00</text>
+      <text x="700" y="172">0</text><text x="800" y="172">1</text><text x="905" y="172">X</text><text x="1005" y="172">0</text><text x="1100" y="172">0</text><text x="1190" y="172" font-family="Helvetica, Arial, sans-serif">ADD</text>
+
+      <text x="70" y="218" font-family="Helvetica, Arial, sans-serif" font-weight="bold">addi</text><text x="190" y="218">001000</text>
+      <text x="300" y="218">0</text><text x="400" y="218">1</text><text x="500" y="218">1</text><text x="600" y="218">00</text>
+      <text x="700" y="218">0</text><text x="800" y="218">0</text><text x="905" y="218">0</text><text x="1005" y="218">0</text><text x="1100" y="218">0</text><text x="1190" y="218" font-family="Helvetica, Arial, sans-serif">ADD</text>
+
+      <rect y="234" width="1240" height="46" fill="#f8fafc"/>
+      <text x="70" y="264" font-family="Helvetica, Arial, sans-serif" font-weight="bold">beq</text><text x="190" y="264">000100</text>
+      <text x="300" y="264">X</text><text x="400" y="264">0</text><text x="500" y="264">0</text><text x="600" y="264">01</text>
+      <text x="700" y="264">0</text><text x="800" y="264">0</text><text x="905" y="264">X</text><text x="1005" y="264">1</text><text x="1100" y="264">0</text><text x="1190" y="264" font-family="Helvetica, Arial, sans-serif">SUB</text>
+
+      <text x="70" y="310" font-family="Helvetica, Arial, sans-serif" font-weight="bold">j</text><text x="190" y="310">000010</text>
+      <text x="300" y="310">X</text><text x="400" y="310">0</text><text x="500" y="310">X</text><text x="600" y="310">XX</text>
+      <text x="700" y="310">0</text><text x="800" y="310">0</text><text x="905" y="310">X</text><text x="1005" y="310">0</text><text x="1100" y="310">1</text><text x="1190" y="310" font-family="Helvetica, Arial, sans-serif">–</text>
+    </g>
+    <rect y="0" width="1240" height="326" fill="none" stroke="#cbd5e1" rx="6"/>
+  </g>
+
+  <g transform="translate(30,410)" font-size="14" fill="#334155">
+    <text x="0" y="0">X = don't care (the RTL drives these to 0). Unsupported opcodes set every signal to 0, so nothing is written.</text>
+    <text x="0" y="26">R-type funct → ALU op:  0x20 ADD (0010) · 0x22 SUB (0110) · 0x24 AND (0000) · 0x25 OR (0001) · 0x2A SLT (0111)</text>
+  </g>
+</svg>

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" width="1400" height="700" font-family="Helvetica, Arial, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker></defs>
+  <rect width="1400" height="700" fill="#ffffff"/>
+  <text x="700" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Memory Subsystem (Member 3) – Instruction Memory and Data Memory</text>
+
+  <!-- ===== Instruction memory (left) ===== -->
+  <rect x="20" y="64" width="660" height="400" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="350" y="94" text-anchor="middle" font-size="19" font-weight="bold" fill="#7c2d12">Instruction Memory  (instruction_memory.v)</text>
+  <text x="350" y="116" text-anchor="middle" font-size="13" fill="#7c2d12">256 words × 32 bits = 1 KB · read-only · no clock (combinational read)</text>
+
+  <g fill="none" stroke="#334155" stroke-width="2">
+    <line x1="60" y1="210" x2="130" y2="210" marker-end="url(#a)"/>
+    <line x1="300" y1="190" x2="370" y2="190" marker-end="url(#a)"/>
+    <line x1="300" y1="230" x2="510" y2="230" marker-end="url(#a)"/>
+    <line x1="540" y1="210" x2="610" y2="210" marker-end="url(#a)"/>
+    <line x1="215" y1="340" x2="215" y2="250" marker-end="url(#a)"/>
+  </g>
+  <text x="62" y="200" font-size="13" fill="#334155">PC</text>
+  <rect x="130" y="170" width="170" height="80" rx="8" fill="#ffffff" stroke="#ea580c" stroke-width="2"/>
+  <text x="215" y="200" text-anchor="middle" font-size="14" font-weight="bold" fill="#7c2d12">Address check</text>
+  <text x="215" y="218" text-anchor="middle" font-size="11" fill="#7c2d12">addr[31:10] = 0  (in range)</text>
+  <text x="215" y="234" text-anchor="middle" font-size="11" fill="#7c2d12">addr[1:0] = 00  (aligned)</text>
+
+  <rect x="370" y="150" width="120" height="60" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="430" y="176" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c2d12">memory[ ]</text>
+  <text x="430" y="194" text-anchor="middle" font-size="11" fill="#7c2d12">index = addr[9:2]</text>
+  <text x="305" y="183" font-size="11" fill="#16a34a">valid</text>
+  <text x="305" y="248" font-size="11" fill="#dc2626">invalid → NOP 0x00000000</text>
+  <!-- mux -->
+  <polygon points="510,170 540,182 540,238 510,250" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <line x1="490" y1="180" x2="510" y2="180" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <text x="612" y="200" font-size="13" fill="#334155">instruction</text>
+  <text x="612" y="216" font-size="13" fill="#334155">[31:0]</text>
+
+  <rect x="130" y="340" width="170" height="60" rx="8" fill="#ffffff" stroke="#ea580c" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="215" y="366" text-anchor="middle" font-size="13" font-weight="bold" fill="#7c2d12">instruction_memory.mem</text>
+  <text x="215" y="384" text-anchor="middle" font-size="11" fill="#7c2d12">loaded by $readmemh at start</text>
+  <text x="225" y="300" font-size="11" fill="#334155">program</text>
+
+  <g font-size="13" fill="#7c2d12">
+    <text x="340" y="300" font-weight="bold">Key points</text>
+    <text x="340" y="322">• Instruction ready in the same cycle as PC</text>
+    <text x="340" y="342">• Unused words pre-filled with NOP</text>
+    <text x="340" y="362">• Bad address can never change CPU state</text>
+    <text x="340" y="382">• Testbench: 21 / 21 tests passed</text>
+  </g>
+
+  <!-- ===== Data memory (right) ===== -->
+  <rect x="720" y="64" width="660" height="400" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="1050" y="94" text-anchor="middle" font-size="19" font-weight="bold" fill="#7c2d12">Data Memory  (data_memory.v)</text>
+  <text x="1050" y="116" text-anchor="middle" font-size="13" fill="#7c2d12">256 words × 32 bits = 1 KB · used by lw and sw</text>
+
+  <g font-size="13" fill="#334155" text-anchor="end">
+    <text x="880" y="166">clk</text><text x="880" y="196">reset</text><text x="880" y="226">mem_write</text>
+    <text x="880" y="256">mem_read</text><text x="880" y="286">address (ALU result)</text><text x="880" y="316">write_data (rt)</text>
+  </g>
+  <g stroke="#334155" stroke-width="2" fill="none">
+    <line x1="886" y1="162" x2="940" y2="162" marker-end="url(#a)"/>
+    <line x1="886" y1="192" x2="940" y2="192" marker-end="url(#a)"/>
+    <line x1="886" y1="222" x2="940" y2="222" marker-end="url(#a)"/>
+    <line x1="886" y1="252" x2="940" y2="252" marker-end="url(#a)"/>
+    <line x1="886" y1="282" x2="940" y2="282" marker-end="url(#a)"/>
+    <line x1="886" y1="312" x2="940" y2="312" marker-end="url(#a)"/>
+    <line x1="1160" y1="237" x2="1220" y2="237" marker-end="url(#a)"/>
+  </g>
+  <rect x="940" y="140" width="220" height="194" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="1050" y="210" text-anchor="middle" font-size="16" font-weight="bold" fill="#7c2d12">memory[0..255]</text>
+  <text x="1050" y="232" text-anchor="middle" font-size="12" fill="#7c2d12">Write: on rising clk edge</text>
+  <text x="1050" y="250" text-anchor="middle" font-size="12" fill="#7c2d12">Read: instant (combinational)</text>
+  <text x="1050" y="268" text-anchor="middle" font-size="12" fill="#7c2d12">Reset: clears all words to 0</text>
+  <text x="1224" y="233" font-size="13" fill="#334155">read_data</text>
+
+  <g font-size="13" fill="#7c2d12">
+    <text x="760" y="370" font-weight="bold">Key points</text>
+    <text x="760" y="392">• Reset has priority over write</text>
+    <text x="760" y="412">• Out-of-range / unaligned: write ignored, read = 0</text>
+    <text x="1090" y="392">• mem_read = 0 → output 0</text>
+    <text x="1090" y="412">• Testbench: 30 / 30 passed</text>
+    <text x="760" y="432">• Read + write in same cycle: old value before edge, new value after</text>
+  </g>
+
+  <!-- ===== Address map ===== -->
+  <g transform="translate(20,490)">
+    <rect width="1360" height="190" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="20" y="32" font-size="17" font-weight="bold" fill="#0f172a">Byte address → word index (both memories):  index = address[9:2]</text>
+    <g font-size="14" text-anchor="middle" font-family="Menlo, Consolas, monospace">
+      <g fill="#ffedd5" stroke="#ea580c" stroke-width="1.5">
+        <rect x="20" y="56" width="150" height="40"/><rect x="170" y="56" width="150" height="40"/><rect x="320" y="56" width="150" height="40"/>
+        <rect x="470" y="56" width="150" height="40"/><rect x="620" y="56" width="150" height="40"/><rect x="770" y="56" width="150" height="40"/>
+      </g>
+      <g fill="#0f172a">
+        <text x="95" y="82">mem[0]</text><text x="245" y="82">mem[1]</text><text x="395" y="82">mem[2]</text>
+        <text x="545" y="82">mem[3]</text><text x="695" y="82">…</text><text x="845" y="82">mem[255]</text>
+      </g>
+      <g fill="#64748b" font-size="13">
+        <text x="95" y="118">0x000</text><text x="245" y="118">0x004</text><text x="395" y="118">0x008</text>
+        <text x="545" y="118">0x00C</text><text x="695" y="118">…</text><text x="845" y="118">0x3FC</text>
+      </g>
+    </g>
+    <g font-size="13" fill="#334155">
+      <text x="960" y="70">Each word = 4 bytes, so the last</text>
+      <text x="960" y="90">2 address bits are always 00.</text>
+      <text x="960" y="118">0x400 and above is out of range</text>
+      <text x="960" y="138">(no wrap-around to word 0).</text>
+    </g>
+    <text x="20" y="160" font-size="13" fill="#334155">Sample program in instruction_memory.mem:  addi 5 · addi 10 · add · sw · lw · beq · sub (skipped) · j (halt)</text>
+  </g>
+</svg>

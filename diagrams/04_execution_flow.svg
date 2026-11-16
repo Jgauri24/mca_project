@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520" width="1400" height="520" font-family="Helvetica, Arial, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker></defs>
+  <rect width="1400" height="520" fill="#ffffff"/>
+  <text x="700" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Single-Cycle Instruction Execution (one clock cycle per instruction)</text>
+
+  <g fill="none" stroke="#334155" stroke-width="2.5">
+    <line x1="244" y1="160" x2="276" y2="160" marker-end="url(#a)"/>
+    <line x1="500" y1="160" x2="532" y2="160" marker-end="url(#a)"/>
+    <line x1="756" y1="160" x2="788" y2="160" marker-end="url(#a)"/>
+    <line x1="1012" y1="160" x2="1044" y2="160" marker-end="url(#a)"/>
+    <polyline points="1335,260 1335,300 132,300 132,262" marker-end="url(#a)"/>
+  </g>
+  <text x="644" y="292" text-anchor="middle" font-size="14" fill="#334155">Next PC loaded on the rising clock edge (PC+4, branch target or jump target)</text>
+
+  <!-- stage boxes: width 224, y 70-260 -->
+  <g>
+    <rect x="20" y="70" width="224" height="190" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <text x="132" y="102" text-anchor="middle" font-size="18" font-weight="bold" fill="#7c2d12">1. Fetch</text>
+    <g font-size="13" fill="#7c2d12" text-anchor="middle">
+      <text x="132" y="132">PC gives the address</text><text x="132" y="152">Instruction Memory returns</text><text x="132" y="172">the 32-bit instruction</text>
+      <text x="132" y="236" font-style="italic">pc.v · instruction_memory.v</text>
+    </g>
+  </g>
+  <g>
+    <rect x="276" y="70" width="224" height="190" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="388" y="102" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e3a8a">2. Decode</text>
+    <g font-size="13" fill="#1e3a8a" text-anchor="middle">
+      <text x="388" y="132">Control Unit reads opcode</text><text x="388" y="152">and sets control signals</text><text x="388" y="172">Registers rs, rt are read</text><text x="388" y="192">Immediate is sign-extended</text>
+      <text x="388" y="236" font-style="italic">control_unit.v · register_file.v</text>
+    </g>
+  </g>
+  <g>
+    <rect x="532" y="70" width="224" height="190" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="644" y="102" text-anchor="middle" font-size="18" font-weight="bold" fill="#14532d">3. Execute</text>
+    <g font-size="13" fill="#14532d" text-anchor="middle">
+      <text x="644" y="132">ALU Control picks the op</text><text x="644" y="152">ALU computes result:</text><text x="644" y="172">math, address or compare</text><text x="644" y="192">Zero flag used by beq</text>
+      <text x="644" y="236" font-style="italic">alu_control.v · alu.v</text>
+    </g>
+  </g>
+  <g>
+    <rect x="788" y="70" width="224" height="190" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+    <text x="900" y="102" text-anchor="middle" font-size="18" font-weight="bold" fill="#7c2d12">4. Memory</text>
+    <g font-size="13" fill="#7c2d12" text-anchor="middle">
+      <text x="900" y="132">lw reads Data Memory</text><text x="900" y="152">sw writes Data Memory</text><text x="900" y="172">(other instructions skip)</text>
+      <text x="900" y="236" font-style="italic">data_memory.v</text>
+    </g>
+  </g>
+  <g>
+    <rect x="1044" y="70" width="224" height="190" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="1156" y="102" text-anchor="middle" font-size="18" font-weight="bold" fill="#14532d">5. Write-back</text>
+    <g font-size="13" fill="#14532d" text-anchor="middle">
+      <text x="1156" y="132">MemToReg picks ALU result</text><text x="1156" y="152">or memory data</text><text x="1156" y="172">Written into rd / rt</text>
+      <text x="1156" y="236" font-style="italic">register_file.v</text>
+    </g>
+  </g>
+  <g>
+    <rect x="1290" y="70" width="90" height="190" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="1335" y="150" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e3a8a">Next</text>
+    <text x="1335" y="170" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e3a8a">PC</text>
+    <text x="1335" y="196" text-anchor="middle" font-size="11" fill="#1e3a8a" font-style="italic">branch_jump.v</text>
+  </g>
+  <line x1="1268" y1="160" x2="1288" y2="160" stroke="#334155" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- example -->
+  <g transform="translate(20,340)">
+    <rect width="1360" height="160" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="20" y="32" font-size="16" font-weight="bold" fill="#0f172a">Example:  lw $t3, 0($zero)   (machine code 0x8C0B0000)</text>
+    <g font-size="14" fill="#334155">
+      <text x="20" y="64">1. Fetch: PC = 0x10 → instruction 0x8C0B0000</text>
+      <text x="20" y="90">2. Decode: opcode 0x23 → RegWrite=1, ALUSrc=1, MemRead=1, MemToReg=1</text>
+      <text x="20" y="116">3. Execute: ALU adds $zero + 0 → address 0</text>
+      <text x="700" y="64">4. Memory: Data Memory word 0 is read (value 15)</text>
+      <text x="700" y="90">5. Write-back: 15 is written into $t3</text>
+      <text x="700" y="116">Next PC = 0x14 (PC + 4)</text>
+    </g>
+  </g>
+</svg>
