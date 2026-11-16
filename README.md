@@ -2,6 +2,8 @@
 
 A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction is fetched, decoded, executed and written back in one clock cycle. The processor supports arithmetic, logic, memory and branch/jump instructions. It runs three sample programs: array sum, maximum search and factorial.
 
+> 🎥 **Phase I Prototype Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
+
 ![Datapath and Control](diagrams/01_datapath.png)
 
 ---
@@ -123,4 +125,4 @@ Editable SVG versions of every diagram are in the same folder.
 ## Project Deliverables
 
 - **Project report (IEEE format):** to be added
-- **Prototype video:** to be added
+- **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)

@@ -1,5 +1,7 @@
 # MCA MIPS verification
 
+- **Prototype Demo Video:** [Google Drive Link](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
+
 All verification and sample programs are written in Verilog-2001. The CPU testbench embeds the machine-code words directly, so Python, an assembler, and external sample `.mem` files are not required. The original `instruction_memory.mem` remains the memory subsystem's existing standalone sample.
 
 ## Encoding and addressing assumptions
