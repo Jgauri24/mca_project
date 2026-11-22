@@ -1,6 +1,6 @@
 # Single-Cycle 32-bit MIPS Processor with Memory Interface
 
-A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction is fetched, decoded, executed and written back in one clock cycle. The processor supports arithmetic, logic, memory and branch/jump instructions. It runs three sample programs: array sum, maximum search and factorial.
+A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction is fetched, decoded, executed and written back in one clock cycle. The processor supports arithmetic, logic, memory and branch/jump instructions. It runs four sample programs: array sum, maximum search, factorial and a jump/logic test.
 
 > 🎥 **Phase I Prototype Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
 
@@ -13,8 +13,10 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 - **Instruction set:** `add`, `sub`, `and`, `or`, `slt`, `lw`, `sw`, `addi`, `beq`, `j`
 - **Datapath:** PC, instruction memory, register file (32 × 32), sign extension, ALU, data memory, branch/jump logic and write-back multiplexer
 - **Memories:** 256 × 32-bit instruction ROM and 256 × 32-bit data RAM (1 KB each) with safe handling of invalid addresses
-- **Verification:** self-checking testbenches for every module plus full-CPU program tests
-- **Synthesis:** generic Yosys synthesis report
+- **Reset:** one active-high synchronous reset clears the PC, all 32 registers and all 256 data-memory words
+- **Verification:** self-checking testbenches for every module plus full-CPU program tests and reset checks
+- **Performance:** dynamic instruction mix, cycles and CPI measured in simulation and compared with a multi-cycle baseline
+- **Synthesis:** Yosys generic, Xilinx Artix-7 and Gowin place-and-route results with maximum frequency (scripts in `synthesis/`)
 
 ---
 
@@ -40,7 +42,8 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 | `tb_sign_extend.v` | Positive and negative immediates |
 | `tb_instruction_memory.v` | Fetching, program loading, invalid and unaligned addresses |
 | `tb_data_memory.v` | Read/write, reset, invalid addresses, read and write in the same cycle |
-| `tb_mips_cpu.v` | Full CPU running array sum, maximum search and factorial |
+| `tb_mips_cpu.v` | Full CPU running array sum, maximum search, factorial and a jump/logic test; checks reset |
+| `tb_performance.v` | Instruction mix, cycles and CPI for every program; single-cycle vs multi-cycle comparison |
 
 Other documents: [MEMORY_SUBSYSTEM.md](MEMORY_SUBSYSTEM.md), [README_VERIFICATION.md](README_VERIFICATION.md), [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md)
 
@@ -54,7 +57,7 @@ Other documents: [MEMORY_SUBSYSTEM.md](MEMORY_SUBSYSTEM.md), [README_VERIFICATIO
 | Member 2 | Execution Unit | `alu.v`, `register_file.v`, `sign_extend.v` and their testbenches |
 | Member 3 | Memory Subsystem | `instruction_memory.v`, `instruction_memory.mem`, `data_memory.v` and their testbenches |
 | Member 4 | System Verification | `tb_mips_cpu.v`, `README_VERIFICATION.md` |
-| Member 5 | Synthesis | `SYNTHESIS_REPORT.md` |
+| Member 5 | Synthesis | `SYNTHESIS_REPORT.md`, `synthesis/` |
 
 ![Team and modules](diagrams/02_team_modules.png)
 
@@ -70,6 +73,12 @@ Run these commands from the project folder.
 ```bash
 iverilog -g2001 -o sim_cpu mips_cpu.v pc.v instruction_memory.v control_unit.v register_file.v sign_extend.v alu_control.v alu.v data_memory.v branch_jump.v tb_mips_cpu.v
 vvp sim_cpu
+```
+
+**Performance measurement (cycles, CPI, multi-cycle comparison)**
+```bash
+iverilog -g2001 -o sim_perf mips_cpu.v pc.v instruction_memory.v control_unit.v register_file.v sign_extend.v alu_control.v alu.v data_memory.v branch_jump.v tb_performance.v
+vvp sim_perf
 ```
 
 **Individual modules**
@@ -94,15 +103,31 @@ Each testbench prints a `[PASS]` or `[FAIL]` line for every check and a final su
 | Sign Extension | 11 / 11 |
 | Instruction Memory | 21 / 21 |
 | Data Memory | 30 / 30 |
-| Full CPU | 6 / 6 |
+| Full CPU (4 programs + reset) | 18 / 18 |
+| Performance runs | 4 / 4 programs correct |
 
 | Program | Expected result | Result |
 |---|---|---|
 | Array sum of [10, 20, 30, 40, 50] | 150 | 150 ✔ |
 | Maximum of [12, 45, 7, 89, 23] | 89 | 89 ✔ |
 | Factorial 5! | 120 | 120 ✔ |
+| Jump/logic test (J skips an `addi`, then SUB/AND/OR/SLT/SW/LW) | 2, 8, 14, 1, 14, 14 | all ✔ |
 
-Yosys generic synthesis: 22,625 cells, `check` reported 0 problems. See [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md).
+### Performance
+
+Measured with `tb_performance.v` (each program runs until its halt loop; the halt jump is not counted). The single-cycle CPU always has **CPI = 1**. The multi-cycle column uses the classic multi-cycle MIPS step counts (R-type 4, ADDI 4, LW 5, SW 4, BEQ 3, J 3). Times use the textbook component delays (memory 200 ps, register read 100 ps, ALU 200 ps, register write 100 ps), which give an 800 ps single-cycle clock and a 200 ps multi-cycle clock.
+
+| Program | Instructions | Single-cycle cycles | Multi-cycle cycles | Multi-cycle CPI | Single-cycle time | Multi-cycle time |
+|---|---:|---:|---:|---:|---:|---:|
+| Array sum | 11 | 11 | 43 | 3.90 | 8.8 ns | 8.6 ns |
+| Maximum search | 17 | 17 | 64 | 3.76 | 13.6 ns | 12.8 ns |
+| Factorial 5! | 105 | 105 | 384 | 3.65 | 84.0 ns | 76.8 ns |
+| Jump/logic test | 9 | 9 | 36 | 4.00 | 7.2 ns | 7.2 ns |
+| **Total** | **142** | **142** | **527** | **3.71** | **113.6 ns** | **105.4 ns** |
+
+The single-cycle design needs 3.7x fewer cycles, but every cycle must be long enough for the slowest instruction (LW). With these delays the multi-cycle baseline takes about 7% less total time (105.4 ns vs 113.6 ns), because most instructions are R-type, ADDI and BEQ, which finish in 3-4 short steps.
+
+Synthesis: Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Place-and-route and maximum frequency are in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md).
 
 ---
 
