@@ -1,6 +1,10 @@
-// End-to-end self-checking tests for the supplied single-cycle CPU.
+// End-to-end self-checking tests for the single-cycle CPU.
 // Sample programs are encoded as Verilog constants below, so no assembler or
-// external program files are required. RTL is not modified.
+// external program files are required.
+// The register file and data memory are cleared by the CPU reset input
+// (reset is wired through mips_cpu), and this is checked before every program.
+// Program 4 exercises J (forward jump over an instruction), SUB, AND, OR,
+// SLT, SW and LW together.
 `timescale 1ns / 1ps
 module tb_mips_cpu;
     reg clk, reset;
@@ -25,12 +29,21 @@ module tb_mips_cpu;
     task clear_state;
         begin
             reset=1; repeat(2) @(negedge clk); reset=0;
-            for(i=0;i<32;i=i+1) uut.u_register_file.registers[i]=0;
-            for(i=0;i<256;i=i+1) begin
-                uut.u_dmem.memory[i]=0;
-                uut.u_imem.memory[i]=0;
-            end
+            // Instruction memory is a ROM with no reset, so clear it here.
+            for(i=0;i<256;i=i+1) uut.u_imem.memory[i]=0;
             cycles=0;
+        end
+    endtask
+    // Checks that the hardware reset cleared the register file and data memory.
+    task check_reset;
+        input [255:0] label;
+        integer bad;
+        begin
+            bad=0;
+            for(i=1;i<32;i=i+1) if(uut.u_register_file.registers[i]!==0) bad=bad+1;
+            for(i=0;i<256;i=i+1) if(uut.u_dmem.memory[i]!==0) bad=bad+1;
+            if(bad==0 && debug_pc===0) begin $display("[PASS] %0s: registers, data memory and PC cleared by reset",label); pass_count=pass_count+1; end
+            else begin $display("[FAIL] %0s: %0d non-zero locations after reset, PC=%08h",label,bad,debug_pc); fail_count=fail_count+1; end
         end
     endtask
     // program_id: 1=array sum, 2=maximum search, 3=factorial.
@@ -93,6 +106,19 @@ module tb_mips_cpu;
                     uut.u_imem.memory[14]=32'hac0a0000;
                     uut.u_imem.memory[15]=32'h0800000e;
                 end
+                4: begin // jump + logic test: $t2=2, $t3=8, $t4=14, $t5=1, MEM[4]=14, $t6=14
+                    uut.u_imem.memory[0]=32'h2008000c;  // addi $t0,$zero,12
+                    uut.u_imem.memory[1]=32'h2009000a;  // addi $t1,$zero,10
+                    uut.u_imem.memory[2]=32'h08000004;  // j    0x10 (skip next)
+                    uut.u_imem.memory[3]=32'h200a0063;  // addi $t2,$zero,99 (must be skipped)
+                    uut.u_imem.memory[4]=32'h01095022;  // sub  $t2,$t0,$t1
+                    uut.u_imem.memory[5]=32'h01095824;  // and  $t3,$t0,$t1
+                    uut.u_imem.memory[6]=32'h01096025;  // or   $t4,$t0,$t1
+                    uut.u_imem.memory[7]=32'h0128682a;  // slt  $t5,$t1,$t0
+                    uut.u_imem.memory[8]=32'hac0c0004;  // sw   $t4,4($zero)
+                    uut.u_imem.memory[9]=32'h8c0e0004;  // lw   $t6,4($zero)
+                    uut.u_imem.memory[10]=32'h0800000a; // halt: j halt
+                end
                 default: begin
                     $display("[FAIL] Invalid program_id=%0d",program_id);
                     fail_count=fail_count+1;
@@ -105,6 +131,7 @@ module tb_mips_cpu;
         input integer ncycles;
         begin
             clear_state();
+            check_reset("reset before program");
             load_program(program_id);
             repeat(ncycles) @(negedge clk);
         end
@@ -121,6 +148,17 @@ module tb_mips_cpu;
         run_program(3,125);
         check(uut.u_register_file.registers[10],120,"factorial result $t2");
         check(uut.u_dmem.memory[0],120,"factorial stored result");
+        run_program(4,12);
+        check(uut.u_register_file.registers[10],2,"jump test: sub $t2 (skip ok)");
+        check(uut.u_register_file.registers[11],8,"jump test: and $t3");
+        check(uut.u_register_file.registers[12],14,"jump test: or $t4");
+        check(uut.u_register_file.registers[13],1,"jump test: slt $t5");
+        check(uut.u_dmem.memory[1],14,"jump test: sw to byte address 4");
+        check(uut.u_register_file.registers[14],14,"jump test: lw $t6");
+        check(debug_pc,32'h28,"jump test: PC held at halt loop");
+        // Reset in the middle of operation must clear everything again.
+        reset=1; repeat(2) @(negedge clk); reset=0;
+        check_reset("reset after programs");
         $display("============================================================");
         if(fail_count==0) $display("STATUS: ALL CPU PROGRAMS PASSED (%0d checks)",pass_count);
         else $display("STATUS: FAIL (%0d passed, %0d failed)",pass_count,fail_count);

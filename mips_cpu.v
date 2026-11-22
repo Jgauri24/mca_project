@@ -6,6 +6,8 @@
 // Lead: Member 1 (Control Unit & Processor Integration)
 // ============================================================================
 
+`timescale 1ns / 1ps
+
 module mips_cpu (
     input  wire        clk,
     input  wire        reset,
@@ -122,6 +124,7 @@ module mips_cpu (
     // Register File
     register_file u_register_file (
         .clk        (clk),
+        .reset      (reset),
         .reg_write  (reg_write),
         .read_reg1  (instruction[25:21]), // rs
         .read_reg2  (instruction[20:16]), // rt
@@ -159,6 +162,7 @@ module mips_cpu (
 
     data_memory u_dmem (
         .clk        (clk),
+        .reset      (reset),
         .mem_read   (mem_read),
         .mem_write  (mem_write),
         .address    (alu_result),
