@@ -5,3 +5,7 @@ sim_*
 a.out
 .DS_Store
 
+# Synthesis artifacts
+synthesis/out/
+synthesis/vivado_reports/
+
