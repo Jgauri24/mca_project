@@ -6,6 +6,8 @@
 // Reset: Active-high synchronous reset
 // ============================================================================
 
+`timescale 1ns / 1ps
+
 module pc (
     input  wire        clk,
     input  wire        reset,

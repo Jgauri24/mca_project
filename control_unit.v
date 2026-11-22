@@ -6,6 +6,8 @@
 // Supported Instructions: R-type, LW, SW, ADDI, BEQ, J
 // ============================================================================
 
+`timescale 1ns / 1ps
+
 module control_unit (
     input  wire [5:0] opcode,
     output reg        RegDst,

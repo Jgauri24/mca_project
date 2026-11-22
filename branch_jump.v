@@ -5,6 +5,8 @@
 // Standard: Verilog-2001
 // ============================================================================
 
+`timescale 1ns / 1ps
+
 module branch_jump (
     input  wire [31:0] pc,
     input  wire [31:0] immediate,

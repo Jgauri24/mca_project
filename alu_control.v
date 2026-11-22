@@ -6,6 +6,8 @@
 // Supported ALU Operations: ADD (0010), SUB (0110), AND (0000), OR (0001), SLT (0111)
 // ============================================================================
 
+`timescale 1ns / 1ps
+
 module alu_control (
     input  wire [1:0] ALUOp,
     input  wire [5:0] funct,
