@@ -1,0 +1,9 @@
+// Pin constraints for Sipeed Tang Mega 138K Pro (GW5AST-LV138FPG676AES), 50 MHz clock
+IO_LOC "clk" P16;
+IO_LOC "reset" J24;
+IO_LOC "led[0]" J14;
+IO_LOC "led[1]" R26;
+IO_LOC "led[2]" L20;
+IO_LOC "led[3]" M25;
+IO_LOC "led[4]" N21;
+IO_LOC "led[5]" N23;
