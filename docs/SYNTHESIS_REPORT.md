@@ -1,15 +1,13 @@
-# Synthesis report: `mips_cpu`
+# Generic synthesis report: `mips_cpu`
 
-**Run date:** 2026-11-14 (generic) / 2026-11-22 (FPGA place-and-route)
-**Host:** macOS, Apple Silicon
-**Tool (generic):** Yosys 0.71+post (`5628c132`, Homebrew)
-**Top module:** `mips_cpu` (CPU core); `fpga_top` (board wrapper)
-**Flow:** generic Yosys `synth`, then Yosys `synth_xilinx` Artix-7 estimate, then timing analysis
-**Target device:** Xilinx Artix-7 XC7A35T-CPG236-1 (Basys 3)
+**Run date:** 2026-11-14  
+**Host:** macOS, Apple Silicon  
+**Tool:** Yosys 0.71+post (`5628c132`, Homebrew)  
+**Top module:** `mips_cpu`  
+**Flow:** generic Yosys `synth`, followed by `check` and `stat`  
+**Target device:** none (no FPGA family or part was selected)
 
----
-
-## 1. Generic synthesis (Yosys)
+## Result
 
 Synthesis completed successfully. Yosys `check` reported **0 problems**.
 
@@ -33,100 +31,73 @@ Module totals from Yosys hierarchy statistics:
 | `pc` | 32 |
 | ALU, control, branch/jump, sign extension, and integration logic | 1,011 |
 
-The register and data memories account for most of the generic cells. Data memory clears all 256 × 32 bits on reset and uses asynchronous reads; Yosys maps those arrays into generic logic and registers rather than inferring FPGA block RAM.
+The register and data memories account for most of the generic cells. In this RTL, data memory clears all 256 x 32 bits on reset and uses asynchronous reads. Yosys maps those arrays into generic logic and registers instead of reporting inferred FPGA block RAM. A vendor flow with a concrete part may produce different results.
+
+## Limitations and integration finding
+
+These are generic logic-cell counts after Yosys mapping, **not** FPGA LUT/CLB counts. This run has no device, pin constraints, clock constraint, placement, routing, or timing analysis; it therefore provides no maximum clock frequency or board utilization estimate.
+
+At the time of this first run, `mips_cpu.v` left `register_file.reset` and `data_memory.reset` unconnected. **This has since been fixed:** `reset` is now wired to both blocks and `tb_mips_cpu.v` checks that reset clears them. The generic cell counts above are unchanged by the fix (22,625 cells, 0 problems on re-run).
+
+## Reproduce
+
+Run from the project directory:
+
+```sh
+yosys -p 'read_verilog rtl/*.v; synth -top mips_cpu; check; stat'
+```
 
 ---
 
-## 2. Xilinx Artix-7 resource estimate (Yosys `synth_xilinx`)
+# FPGA synthesis, placement timing and maximum frequency
 
-Yosys `synth_xilinx -family xc7` maps the design to Xilinx 7-series primitives. The numbers below are the post-mapping estimates before Vivado place-and-route.
+**Run date:** 2026-11-22  
+**Tools:** Yosys 0.71+post, nextpnr-himbaechel (Gowin), Icarus Verilog 13.0  
+**Scripts:** [`synthesis/run_yosys.sh`](../synthesis/run_yosys.sh) (open-source flow), [`synthesis/vivado_build.tcl`](../synthesis/vivado_build.tcl) + [`synthesis/basys3.xdc`](../synthesis/basys3.xdc) (Vivado flow)  
+**Board wrapper:** [`synthesis/fpga_top.v`](../synthesis/fpga_top.v) folds the 64 debug output bits into 6 LEDs with XOR, so the design fits on a board and no CPU logic is optimised away.
 
-| Resource | Used | Available (XC7A35T) | Utilisation |
+## 1. Xilinx Artix-7 resource estimate (Yosys `synth_xilinx -family xc7`)
+
+| Resource | Used | Basys3 xc7a35t available | Utilisation |
 |---|---:|---:|---:|
-| Slice LUTs | 4,190 | 20,800 | 20.1 % |
-| Slice Registers (FFs) | 9,216 | 41,600 | 22.2 % |
-| Block RAMs | 0 | 50 | 0.0 % |
-| I/O pins | 4 | 106 | 3.8 % |
+| LUTs (LUT2-LUT6) | 4,190 | 20,800 | 20.1 % |
+| Flip-flops (FDRE) | 9,216 | 41,600 | 22.2 % |
+| CARRY4 | 35 | 8,150 | 0.4 % |
+| Block RAM | 0 | 50 | 0 % |
+| I/O (IBUF + OBUF) | 66 | 106 | 62 % |
 
-> **Note:** The 9,216 flip-flops come almost entirely from the data memory (256 words × 32 bits = 8,192 FFs) because the RTL resets every word synchronously; Yosys therefore cannot infer BRAM. The register file contributes the remaining 1,024 FFs (32 × 32).
+| Module | Cells |
+|---|---:|
+| `data_memory` | 11,241 |
+| `register_file` | 1,825 |
+| `alu` | 183 |
+| `branch_jump` | 80 |
+| `pc` | 32 |
+| `control_unit` + `alu_control` | 13 |
+| **Total `mips_cpu`** | **13,510** |
 
----
+Flip-flops: 8,192 for data memory (256 x 32), 992 for registers `$1-$31` (`$0` is constant and removed) and 32 for the PC = 9,216.
 
-## 3. FPGA place-and-route and maximum frequency
+## 2. Gowin placement and static timing analysis (nextpnr)
 
-### Methodology
+Device: Gowin GW5AST-LV138FPG676AES (Sipeed Tang Mega 138K Pro), 50 MHz target clock, pins in [`synthesis/tang_mega_138k.cst`](../synthesis/tang_mega_138k.cst).
 
-The critical path of a single-cycle MIPS LW instruction passes through every combinational stage in sequence:
+| Resource | Used | Available | Utilisation |
+|---|---:|---:|---:|
+| LUT4 | 25,695 | 138,240 | 18.6 % |
+| MUX2 (LUT5-LUT8 wide muxes) | 11,488 | 138,240 | 8.3 % |
+| DFF | 8,446 | 138,240 | 6.1 % |
+| ALU (carry cells) | 106 | 103,680 | 0.1 % |
+| Block RAM (BSRAM, instruction ROM) | 1 | 340 | 0.3 % |
+| I/O (IOB) | 8 | 324 | 2.5 % |
 
-```
-PC register → instruction ROM (combinational) → register file read (combinational)
-  → sign extender → ALU (32-bit adder) → data memory read (combinational)
-  → write-back mux → register file write (setup time)
-```
+**Maximum frequency: 30.46 MHz** (critical path about 32.8 ns), from nextpnr static timing analysis after placement, with a 50 MHz target clock. The 50 MHz target is not met, so the board would be clocked at or below 30 MHz.
 
-Using standard Artix-7 characterisation data for the XC7A35T-CPG236-1 speed grade (-1):
+This figure comes from post-placement timing, where routing delays are estimated by nextpnr. Full routing of this design (133,064 connections, mostly the data-memory read multiplexers) did not finish in a reasonable time on this device, so no post-route number is reported. Gowin LUTs have 4 inputs, so the wide memory multiplexers need many more logic levels than on a Xilinx 6-input LUT device; the Vivado script in `synthesis/` will give the Artix-7 post-route frequency where Vivado is available.
 
-| Path segment | Delay model | Estimated delay |
-|---|---|---:|
-| PC register clock-to-Q | FF Tcko (Artix-7 -1) | 0.45 ns |
-| Instruction ROM decode + mux (LUT chain, ~6 levels) | 6 × LUT + route | 2.10 ns |
-| Register file read (combinational, 2 LUT levels) | 2 × LUT + route | 0.85 ns |
-| Sign extender (wire/replicate) | Routing only | 0.20 ns |
-| 32-bit ripple-carry adder (ALU, synthesised to carry chain) | CARRY4 × 8 + route | 2.40 ns |
-| Data memory read decode + mux (~5 LUT levels) | 5 × LUT + route | 1.80 ns |
-| Write-back mux (1 LUT level) | 1 × LUT + route | 0.40 ns |
-| Register file setup time | FF Tsetup (Artix-7 -1) | 0.10 ns |
-| **Total critical-path delay** | | **8.30 ns** |
+## 3. Observations
 
-### Maximum operating frequency
-
-$$F_{\max} = \frac{1}{T_{\text{critical}}} = \frac{1}{8.30\ \text{ns}} \approx \mathbf{120.5\ MHz}$$
-
-| Parameter | Value |
-|---|---|
-| Tool | Yosys 0.71 `synth_xilinx` + Artix-7 characterisation |
-| Device / speed grade | XC7A35T-CPG236-1 (Basys 3) |
-| Target clock | 100 MHz (10 ns period) |
-| **Fmax (estimated)** | **120.5 MHz** |
-| Timing slack at 100 MHz | +1.70 ns (design meets 100 MHz) |
-| Critical path | PC → ROM → register read → ALU (carry chain) → data memory → mux → register write |
-
-> The design comfortably meets the 100 MHz Basys 3 clock with **1.70 ns of positive slack**.
-> The bottleneck is the 32-bit carry-chain ALU followed by the data-memory read on the LW path.
-> To push beyond 120 MHz a pipelined ALU or synchronous memory with a half-cycle read latency
-> would be required.
-
----
-
-## 4. Limitations
-
-- These LUT/FF counts are from Yosys `synth_xilinx` mapping before Vivado place-and-route; a full Vivado implementation may differ by ±5–10 %.
-- The Fmax figure is derived from Artix-7 speed-grade characterisation tables and a manual critical-path trace, not from a Vivado timing report. It is a reliable engineering estimate; run `vivado -mode batch -source synthesis/vivado_build.tcl` for exact post-route WNS.
-- No block RAMs are inferred because the data memory and register file both have synchronous reset, which prevents BRAM inference in Yosys.
-
----
-
-## 5. Reproduce
-
-**Generic synthesis:**
-```sh
-yosys -p 'read_verilog alu.v alu_control.v branch_jump.v control_unit.v data_memory.v \
-instruction_memory.v mips_cpu.v pc.v register_file.v sign_extend.v; synth -top mips_cpu; check; stat'
-```
-
-**Xilinx Artix-7 estimate:**
-```sh
-yosys -p 'read_verilog alu.v alu_control.v branch_jump.v control_unit.v data_memory.v \
-instruction_memory.v mips_cpu.v pc.v register_file.v sign_extend.v synthesis/fpga_top.v; \
-synth_xilinx -family xc7 -top fpga_top; check; stat'
-```
-
-**Full place-and-route (Vivado, requires installation):**
-```sh
-vivado -mode batch -source synthesis/vivado_build.tcl
-```
-
-**Open-source place-and-route (Gowin, slow – 20–60 min):**
-```sh
-sh synthesis/run_yosys.sh
-```
+- **Data memory dominates the area.** `data_memory.v` clears all 256 words on reset and reads asynchronously. FPGA block RAM supports neither, so the memory is built from 8,192 flip-flops plus large read multiplexers. Removing the memory-wide reset and using a synchronous read would let it map to a single block RAM and cut the area by roughly 80 %.
+- **Critical path.** In a single-cycle CPU the clock period must cover the whole LW path: PC -> instruction ROM -> register read -> ALU (address add) -> data memory read -> write-back mux -> register file setup. This is why the maximum frequency is only about 30 MHz, and it is the main motivation for pipelining.
+- A first attempt on the smaller GW2A-18 (Tang Primer 20K, 20,736 LUT4) did not fit: the design needs about 27.8k Gowin LUT4s because Gowin LUTs have 4 inputs (Xilinx LUT6 packs the same logic into 4.2k LUTs).
+- The Vivado script produces the official Xilinx utilisation and timing reports (`synthesis/vivado_reports/`) for the Basys3 board if Vivado is available.

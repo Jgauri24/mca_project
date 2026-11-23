@@ -4,7 +4,7 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 
 > 🎥 **Phase I Prototype Demo Video:** [Watch on Google Drive](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
 
-> 📄 **IEEE Project Report:** LaTeX source in [`report/`](report/)
+> 📄 **IEEE Project Report:** [report/IEEE_Report_MIPS_Single_Cycle.pdf](report/IEEE_Report_MIPS_Single_Cycle.pdf) (LaTeX source in [`report/`](report/))
 
 ![Datapath and Control](docs/diagrams/01_datapath.png)
 
@@ -18,7 +18,7 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 - **Reset:** one active-high synchronous reset clears the PC, all 32 registers and all 256 data-memory words
 - **Verification:** self-checking testbenches for every module plus full-CPU program tests and reset checks
 - **Performance:** dynamic instruction mix, cycles and CPI measured in simulation and compared with a multi-cycle baseline
-- **Synthesis:** Yosys generic, Xilinx Artix-7 and Gowin place-and-route results with maximum frequency (scripts in `synthesis/`)
+- **Synthesis:** Yosys generic, Xilinx Artix-7 resource estimate and Gowin placement timing (Fmax 30.46 MHz); scripts in `synthesis/`
 
 ---
 
@@ -134,7 +134,7 @@ The single-cycle design needs 3.7x fewer cycles, but every cycle must be long en
 
 ### Synthesis
 
-Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
+Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Gowin GW5AST-138 placement with static timing analysis gives a **maximum frequency of 30.46 MHz** (critical path ≈ 32.8 ns, set by the LW path through the asynchronous data-memory read). Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
 
 ### Waveforms
 
@@ -169,5 +169,5 @@ Editable SVG versions of every diagram are in the same folder.
 
 ## Project Deliverables
 
-- **Project report (IEEE format):** LaTeX source: [report/main.tex](report/main.tex)
+- **Project report (IEEE format):** [report/IEEE_Report_MIPS_Single_Cycle.pdf](report/IEEE_Report_MIPS_Single_Cycle.pdf) · LaTeX source: [report/main.tex](report/main.tex)
 - **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
