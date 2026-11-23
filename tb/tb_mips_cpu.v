@@ -12,6 +12,17 @@ module tb_mips_cpu;
     integer pass_count, fail_count, cycles, i;
     mips_cpu uut(.clk(clk),.reset(reset),.debug_pc(debug_pc),.debug_instruction(debug_instruction));
     always #5 clk=~clk;
+    // Probe wires so register and memory values appear in the VCD waveform
+    // (simulators do not dump memory arrays by default).
+    wire [31:0] t0_reg = uut.u_register_file.registers[8];
+    wire [31:0] t1_reg = uut.u_register_file.registers[9];
+    wire [31:0] t2_reg = uut.u_register_file.registers[10];
+    wire [31:0] t3_reg = uut.u_register_file.registers[11];
+    wire [31:0] t4_reg = uut.u_register_file.registers[12];
+    wire [31:0] t5_reg = uut.u_register_file.registers[13];
+    wire [31:0] t6_reg = uut.u_register_file.registers[14];
+    wire [31:0] dmem_word0 = uut.u_dmem.memory[0];
+    wire [31:0] dmem_word1 = uut.u_dmem.memory[1];
     always @(negedge clk) if (!reset) begin
         cycles=cycles+1;
         $display("[TRACE] cycle=%0d PC=%08h instruction=%08h t0=%0d t1=%0d t2=%0d t3=%0d t4=%0d",
