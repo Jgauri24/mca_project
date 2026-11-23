@@ -36,8 +36,7 @@ mca_project/
 │   ├── waveforms/          Simulation waveform screenshots
 │   ├── MEMORY_SUBSYSTEM.md
 │   ├── VERIFICATION.md
-│   ├── SYNTHESIS_REPORT.md
-│   └── Project_list_MCA.pdf  Project specification
+│   └── SYNTHESIS_REPORT.md
 ├── report/                 IEEE report (main.tex, references.bib, PDF)
 └── Makefile                Simulation targets
 ```
@@ -172,4 +171,3 @@ Editable SVG versions of every diagram are in the same folder.
 
 - **Project report (IEEE format):** LaTeX source: [report/main.tex](report/main.tex)
 - **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
-- **Project specification:** [docs/Project_list_MCA.pdf](docs/Project_list_MCA.pdf) (Project 2)
