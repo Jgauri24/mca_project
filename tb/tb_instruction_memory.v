@@ -35,7 +35,7 @@ module tb_instruction_memory;
 
     // Unit Under Test
     instruction_memory #(
-        .INIT_FILE ("instruction_memory.mem")
+        .INIT_FILE ("programs/instruction_memory.mem")
     ) uut (
         .address     (address),
         .instruction (instruction)

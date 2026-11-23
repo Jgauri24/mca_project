@@ -30,7 +30,7 @@
 `timescale 1ns / 1ps
 
 module instruction_memory #(
-    parameter INIT_FILE = "instruction_memory.mem"
+    parameter INIT_FILE = "programs/instruction_memory.mem"
 )(
     input  [31:0] address,
     output [31:0] instruction
