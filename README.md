@@ -163,5 +163,5 @@ Simulation waveforms generated with Icarus Verilog and plotted from VCD dumps:
 
 ## Project Deliverables
 
-- **Project report (IEEE format):** to be added
+- **Project report (IEEE format):** [IEEE_PROJECT_REPORT.md](IEEE_PROJECT_REPORT.md) (LaTeX source: [IEEE_PROJECT_REPORT.tex](IEEE_PROJECT_REPORT.tex))
 - **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)

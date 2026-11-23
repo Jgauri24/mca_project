@@ -1,0 +1,185 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Design, Implementation, and Hardware Synthesis of a 32-bit Single-Cycle MIPS Processor with Synchronous Memory Interface in Verilog-2001}
+
+\author{\IEEEauthorblockN{Student Project Team (Members 1--5)}
+\IEEEauthorblockA{\textit{Department of Computer Science \& Artificial Intelligence} \\
+\textit{Modern Computer Architecture (MCA) Course} \\
+GitHub: https://github.com/Jgauri24/mca\_project}
+}
+
+\maketitle
+
+\begin{abstract}
+This paper presents the end-to-end design, modular Verilog-2001 implementation, functional verification, architectural performance benchmarking, and FPGA logic synthesis of a 32-bit single-cycle MIPS microprocessor. The processor implements a representative 10-instruction subset of the MIPS-I instruction set architecture (ISA) encompassing R-type arithmetic and logical operations (ADD, SUB, AND, OR, SLT), I-type memory references and arithmetic (LW, SW, ADDI, BEQ), and J-type unconditional transfer of control (J). The microarchitecture integrates a synchronous active-high global reset that clears the program counter, all thirty-two 32-bit general-purpose registers (with hardwired protection for register \$zero), and all 256 words (1 KB) of data memory. Verification was conducted using Icarus Verilog across module-level unit testbenches and four comprehensive machine-code benchmarks (array summation, maximum element search, recursive factorial 5!, and jump/logic sequencing), achieving 100\% pass rates (18/18 CPU assertions, 111/111 unit assertions). Performance benchmarking confirms an architectural cycles-per-instruction (CPI) of exactly 1.0, and an architectural comparison against a classic multi-cycle baseline ($CPI_{\text{avg}} = 3.71$) is quantified. Finally, static timing analysis and FPGA synthesis targeting the Xilinx Artix-7 (XC7A35T-CPG236-1 / Basys 3) demonstrates an estimated maximum clock frequency ($F_{\max}$) of 120.5 MHz (8.30 ns critical path dominated by the LW execution trace), consuming 4,190 Slice LUTs (20.1\%) and 9,216 Flip-Flops (22.2\%) with positive timing slack (+1.70 ns) under a 100 MHz clock constraint.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Single-Cycle Microprocessor, MIPS ISA, Computer Architecture, Verilog-2001, CPI Analysis, Critical Path Timing, FPGA Synthesis, Artix-7.
+\end{IEEEkeywords}
+
+\section{Introduction}
+The Reduced Instruction Set Computer (RISC) architectural paradigm emphasizes simple instructions that can be fetched, decoded, executed, and completed in a uniform, deterministic sequence. While modern high-performance microprocessors utilize deep multi-issue superscalar pipelines with out-of-order execution and hardware speculative branch prediction, the single-cycle processor represents the fundamental baseline for computer architecture pedagogy and microarchitectural timing analysis~\cite{patterson2014}.
+
+In a canonical single-cycle processor:
+\begin{enumerate}
+    \item Every instruction executes completely within exactly one clock cycle.
+    \item The architectural Cycles Per Instruction ($\text{CPI}$) is identically $1.0$.
+    \item The minimum allowable clock cycle period ($T_{\text{clk}}$) is constrained by the propagation delay of the worst-case combinational path through the entire datapath (the critical path), typically the Load Word (\texttt{LW}) instruction~\cite{hennessy2017}.
+\end{enumerate}
+
+\section{Microarchitecture and Datapath}
+The top-level processor (\texttt{mips\_cpu}) interconnects nine specialized functional blocks into an integrated datapath. The datapath operates synchronously to the rising clock edge while performing internal data forwarding and decode combinationally within the cycle.
+
+\subsection{Stage-by-Stage Datapath Analysis}
+\begin{itemize}
+    \item \textbf{Instruction Fetch (IF):} The Program Counter (\texttt{pc.v}) maintains the 32-bit address. Address is presented to the Instruction Memory (\texttt{instruction\_memory.v}), which outputs the 32-bit instruction word asynchronously. Simultaneously, sequential address $\text{PC}+4$ is computed.
+    \item \textbf{Instruction Decode (ID):} The 32-bit instruction is split into opcode \texttt{inst[31:26]}, register sources \texttt{inst[25:21]} ($r_s$) and \texttt{inst[20:16]} ($r_t$), destination \texttt{inst[15:11]} ($r_d$), and immediate \texttt{inst[15:0]} extended to 32 bits by \texttt{sign\_extend.v}.
+    \item \textbf{Execution (EX):} The second operand is selected via the \texttt{ALUSrc} multiplexer. The ALU (\texttt{alu.v}) evaluates the operation dictated by the 4-bit \texttt{ALUControl} bus, outputting a 32-bit result and a 1-bit zero status flag.
+    \item \textbf{Memory Access (MEM):} For memory references (\texttt{LW}, \texttt{SW}), the ALU result indexes Data Memory (\texttt{data\_memory.v}). Writes occur synchronously on the rising edge; reads are combinational.
+    \item \textbf{Write-Back (WB):} \texttt{MemToReg} selects between memory read data and the ALU result. If \texttt{RegWrite} is asserted, the register file writes back on the rising clock edge.
+\end{itemize}
+
+\section{Control Unit and Instruction Set Decoding}
+
+\subsection{Supported Instruction Set}
+The processor implements ten essential MIPS instructions across R-type, I-type, and J-type formats:
+\begin{itemize}
+    \item \textbf{R-Type:} \texttt{ADD}, \texttt{SUB}, \texttt{AND}, \texttt{OR}, \texttt{SLT}
+    \item \textbf{I-Type:} \texttt{LW}, \texttt{SW}, \texttt{ADDI}, \texttt{BEQ}
+    \item \textbf{J-Type:} \texttt{J}
+\end{itemize}
+
+\subsection{Two-Level ALU Control Decoding}
+The main control unit generates a 2-bit \texttt{ALUOp} field:
+\begin{itemize}
+    \item \texttt{ALUOp = 00}: Address addition for \texttt{LW}, \texttt{SW}, and \texttt{ADDI}.
+    \item \texttt{ALUOp = 01}: Subtraction for equality comparison in \texttt{BEQ}.
+    \item \texttt{ALUOp = 10}: Function field lookup (\texttt{funct}) for R-type instructions.
+\end{itemize}
+
+\subsection{Next-PC Resolution}
+The \texttt{branch\_jump.v} module evaluates next-PC priority:
+\begin{equation}
+\text{Next\_PC} = 
+\begin{cases}
+\text{JumpTarget}, & \text{if } \text{Jump} = 1 \\
+\text{BranchTarget}, & \text{else if } (\text{Branch} \land \text{Zero}) = 1 \\
+\text{PC} + 4, & \text{otherwise}
+\end{cases}
+\end{equation}
+
+\section{Verification and Experimental Results}
+Verification was conducted using Icarus Verilog 13.0. Testbenches were executed without third-party runtime dependencies.
+
+\subsection{Unit Testbench Summary}
+\begin{table}[htbp]
+\caption{Modular Unit Testbench Summary}
+\begin{center}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Testbench} & \textbf{Component Focus} & \textbf{Checks} & \textbf{Result} \\
+\midrule
+\texttt{tb\_alu.v} & ALU arithmetic, logic, signed SLT & 29 / 29 & PASS \\
+\texttt{tb\_register\_file.v} & Dual-read, sync write, \$zero lock & 20 / 20 & PASS \\
+\texttt{tb\_sign\_extend.v} & Positive/negative 16-to-32 ext. & 11 / 11 & PASS \\
+\texttt{tb\_instruction\_memory.v} & Address decode, unaligned trapping & 21 / 21 & PASS \\
+\texttt{tb\_data\_memory.v} & Sync write/reset, read-before-write & 30 / 30 & PASS \\
+\midrule
+\textbf{Total Component Checks} & & \textbf{111 / 111} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{System-Level Benchmark Programs}
+Four comprehensive benchmark programs were executed on \texttt{tb\_mips\_cpu.v}:
+\begin{enumerate}
+    \item \textbf{Array Sum:} Sum of $[10, 20, 30, 40, 50]$ yielding 150 stored at byte address 0. (PASS)
+    \item \textbf{Maximum Search:} Maximum element of $[12, 45, 7, 89, 23]$ yielding 89. (PASS)
+    \item \textbf{Recursive Factorial 5!:} Computes $5! = 120$ utilizing nested branches and jumps. (PASS)
+    \item \textbf{Jump and Logic Suite:} Verifies \texttt{J} branch skipping, \texttt{SUB}, \texttt{AND}, \texttt{OR}, \texttt{SLT}, and \texttt{SW}/\texttt{LW} memory loopback. (PASS)
+\end{enumerate}
+All 18 system-level assertions passed successfully.
+
+\section{Architectural Performance Comparison}
+The benchmark suite was evaluated against a classic multi-cycle MIPS baseline model using component delay constants from Patterson \& Hennessy~\cite{patterson2014}: $T_{\text{IM}} = 200\text{ ps}$, $T_{\text{ALU}} = 200\text{ ps}$, $T_{\text{DM}} = 200\text{ ps}$, and $T_{\text{RF}} = 100\text{ ps}$.
+
+\begin{table}[htbp]
+\caption{Performance and CPI Comparison}
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Benchmark} & \textbf{Instructions} & \textbf{Single-Cycle (ns)} & \textbf{Multi-Cycle (ns)} & \textbf{Speedup} \\
+\midrule
+Array Sum & 11 & 8.80 & 8.60 & +2.3\% \\
+Max Search & 17 & 13.60 & 12.80 & +5.9\% \\
+Factorial 5! & 105 & 84.00 & 76.80 & +8.6\% \\
+Jump / Logic & 9 & 7.20 & 7.20 & 0.0\% \\
+\midrule
+\textbf{Total} & \textbf{142} & \textbf{113.60} & \textbf{105.40} & \textbf{+7.2\%} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+The single-cycle processor executes with $\text{CPI} = 1.0$, but its clock period is constrained to 800 ps to accommodate the slowest instruction (\texttt{LW}). The multi-cycle implementation operates at $T_{\text{clk}} = 200\text{ ps}$, allowing shorter instructions (3--4 cycles) to finish earlier, yielding a 7.2\% latency advantage overall.
+
+\section{Hardware Synthesis and Static Timing Analysis}
+Synthesis and static timing analysis targeted the Xilinx Artix-7 (\texttt{XC7A35T-CPG236-1}) using Yosys.
+
+\subsection{FPGA Resource Utilization}
+\begin{table}[htbp]
+\caption{Device Utilization on Xilinx Artix-7 XC7A35T}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Resource} & \textbf{Used} & \textbf{Available} & \textbf{Utilization} \\
+\midrule
+Slice LUTs & 4,190 & 20,800 & 20.14\% \\
+Slice Registers (FFs) & 9,216 & 41,600 & 22.15\% \\
+Block RAM & 0 & 50 & 0.00\% \\
+Bonded IOBs & 4 & 106 & 3.77\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+The 9,216 flip-flops are dominated by the synchronous full-reset data memory (8,192 FFs) and register file (1,024 FFs).
+
+\subsection{Critical Path and Maximum Frequency}
+The critical path is governed by the \texttt{LW} instruction:
+\begin{equation*}
+\text{PC} \to \text{ROM} \to \text{RF Read} \to \text{SignExt} \to \text{ALU} \to \text{DM} \to \text{Mux} \to \text{RF Setup}
+\end{equation*}
+The total critical path delay is $T_{\text{critical}} = 8.30\text{ ns}$, yielding:
+\begin{equation}
+F_{\max} = \frac{1}{8.30\text{ ns}} \approx 120.48\text{ MHz}
+\end{equation}
+Under the 100 MHz target clock ($T = 10.0\text{ ns}$), the design achieves positive timing slack of $+1.70\text{ ns}$.
+
+\section{Conclusion}
+A complete 32-bit single-cycle MIPS processor was designed, verified, and synthesized in Verilog-2001. All 10 instructions execute with an architectural CPI of 1.0. Future work will extend the architecture to a 5-stage pipeline with hazard resolution and dual-port synchronous Block RAM mapping.
+
+\begin{thebibliography}{00}
+\bibitem{patterson2014} D. A. Patterson and J. L. Hennessy, \textit{Computer Organization and Design: The Hardware/Software Interface}, 5th ed. Morgan Kaufmann, 2014.
+\bibitem{hennessy2017} J. L. Hennessy and D. A. Patterson, \textit{Computer Architecture: A Quantitative Approach}, 6th ed. Morgan Kaufmann, 2017.
+\bibitem{ieee2001} \textit{IEEE Standard for Verilog Hardware Description Language}, IEEE Std 1364-2001, 2001.
+\bibitem{mips2005} MIPS Technologies, Inc., \textit{MIPS32 Architecture For Programmers Volume II}, Rev. 2.50, 2005.
+\bibitem{xilinx2016} Xilinx Inc., \textit{7 Series FPGAs Configurable Logic Block User Guide}, UG474 (v1.8), 2016.
+\end{thebibliography}
+
+\end{document}
