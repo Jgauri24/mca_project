@@ -38,6 +38,7 @@ mca_project/
 │   ├── VERIFICATION.md
 │   └── SYNTHESIS_REPORT.md
 ├── report/                 IEEE report (main.tex, references.bib, PDF)
+├── presentation/           Project presentation (PowerPoint)
 └── Makefile                Simulation targets
 ```
 
@@ -170,4 +171,5 @@ Editable SVG versions of every diagram are in the same folder.
 ## Project Deliverables
 
 - **Project report (IEEE format):** [report/IEEE_Report_MIPS_Single_Cycle.pdf](report/IEEE_Report_MIPS_Single_Cycle.pdf) · LaTeX source: [report/main.tex](report/main.tex)
+- **Presentation:** [presentation/MIPS_Single_Cycle_Presentation.pptx](presentation/MIPS_Single_Cycle_Presentation.pptx)
 - **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
