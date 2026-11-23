@@ -16,7 +16,7 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 - **Reset:** one active-high synchronous reset clears the PC, all 32 registers and all 256 data-memory words
 - **Verification:** self-checking testbenches for every module plus full-CPU program tests and reset checks
 - **Performance:** dynamic instruction mix, cycles and CPI measured in simulation and compared with a multi-cycle baseline
-- **Synthesis:** Yosys generic, Xilinx Artix-7 and Gowin place-and-route results with maximum frequency (scripts in `synthesis/`)
+- **Synthesis:** Yosys generic, Xilinx Artix-7 and Gowin place-and-route results with maximum frequency (Fmax ≈ 120.5 MHz on Artix-7, scripts in `synthesis/`)
 
 ---
 
@@ -127,7 +127,7 @@ Measured with `tb_performance.v` (each program runs until its halt loop; the hal
 
 The single-cycle design needs 3.7x fewer cycles, but every cycle must be long enough for the slowest instruction (LW). With these delays the multi-cycle baseline takes about 7% less total time (105.4 ns vs 113.6 ns), because most instructions are R-type, ADDI and BEQ, which finish in 3-4 short steps.
 
-Synthesis: Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Place-and-route and maximum frequency are in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md).
+Synthesis: Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys 3); maximum operating frequency Fmax ≈ 120.5 MHz (slack +1.70 ns at 100 MHz target). Full resource utilisation, critical path analysis and timing breakdown are in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md).
 
 ---
 
@@ -147,7 +147,21 @@ Editable SVG versions of every diagram are in the same folder.
 
 ---
 
+## Waveforms
+
+Simulation waveforms generated with Icarus Verilog and plotted from VCD dumps:
+
+| Waveform | File | What it proves |
+|---|---|---|
+| Array sum execution | [08_wave_array_sum.png](diagrams/08_wave_array_sum.png) | Proves sequential PC execution, accumulation into `$t2` (10 → 30 → 60 → 100 → 150), and final `SW` of 150 into data memory address 0. |
+| Factorial program | [09_wave_factorial.png](diagrams/09_wave_factorial.png) | Proves multi-iteration control flow with taken `BEQ` branches, unconditional `J` loop jumps, and `$t2` correctly reaching 5! = 120. |
+| Synchronous reset | [10_wave_reset.png](diagrams/10_wave_reset.png) | Proves synchronous active-high reset cleanly forces PC to `0x00000000` and resets the register file without glitching. |
+| Jump test & memory round-trip | [11_wave_jump_test.png](diagrams/11_wave_jump_test.png) | Proves `J` instruction jumping over PC 0x0C (0x08 → 0x10) and memory store/load round-trip of value 14 at byte address 4. |
+| ALU operations & flags | [12_wave_alu.png](diagrams/12_wave_alu.png) | Proves all 5 ALU operations (ADD, SUB, AND, OR, signed SLT), zero flag assertion, and signed two's complement boundary cases. |
+
+---
+
 ## Project Deliverables
 
-- **Project report (IEEE format):** to be added
+- **Project report (IEEE format):** [IEEE_PROJECT_REPORT.md](IEEE_PROJECT_REPORT.md) (LaTeX source: [IEEE_PROJECT_REPORT.tex](IEEE_PROJECT_REPORT.tex))
 - **Prototype video:** [Google Drive - Phase I Prototype Demonstration Video](https://drive.google.com/file/d/14KFQ28BnsEGIQnmpHRSVrq3OwRP9Rdy6/view?usp=sharing)
