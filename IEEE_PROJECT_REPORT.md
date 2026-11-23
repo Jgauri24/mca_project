@@ -39,6 +39,9 @@ The objective of this project is to architect, implement, verify, and synthesize
 
 The top-level processor (`mips_cpu`) interconnects nine specialized functional blocks into an integrated datapath. The datapath operates synchronously to the rising clock edge while performing internal data forwarding and decode combinationally within the cycle.
 
+![Single-Cycle MIPS Datapath and Control](diagrams/01_datapath.png)
+*Fig. 1. Single-Cycle 32-bit MIPS Datapath and Control Organization.*
+
 ```
        +-------------------------------------------------------------+
        |                                                             |
@@ -157,6 +160,9 @@ The `branch_jump.v` module resolves control hazards statically:
 
 The project implementation was partitioned across five engineering focus areas:
 
+![Modular Subsystem Architecture and Team Roles](diagrams/02_team_modules.png)
+*Fig. 2. Modular RTL Subsystem Architecture and Individual Member Division.*
+
 ### A. Member 1: Control Unit and Processor Integration
 - **`pc.v`**: 32-bit register with synchronous active-high reset to `32'h0000_0000`.
 - **`control_unit.v`**: Latch-free combinational opcode decoder.
@@ -219,12 +225,27 @@ Four self-checking programs were executed on `tb_mips_cpu.v`:
 Overall Full-CPU Test Status: **18 / 18 Assertions Passed (100%)**.
 
 ### D. Waveform Analysis
-Waveforms were captured to verify transient behavior:
-- **`08_wave_array_sum.png`**: Illustrates PC stepping sequentially while `$t2` increments ($10 \to 30 \to 60 \to 100 \to 150$) and `mem_write` strobes at cycle 10.
-- **`09_wave_factorial.png`**: Depicts branch and jump assertions altering PC flow across loop boundaries without introducing pipeline bubbles.
-- **`10_wave_reset.png`**: Validates that asserting `reset` forces PC immediately to `0x00000000` and clears the internal register file synchronously.
-- **`11_wave_jump_test.png`**: Confirms PC jumping from `0x00000008` to `0x00000010` (skipping `0x0000000C`), followed by `SW` writing 14 to memory and `LW` restoring it.
-- **`12_wave_alu.png`**: Confirms arithmetic zero-crossing flags and sign-bit propagation during negative SLT comparisons.
+Waveforms were captured to verify transient cycle-by-cycle hardware behavior:
+
+#### 1. Array Summation Waveform
+![Array Sum Execution](diagrams/08_wave_array_sum.png)
+*Fig. 3. Array Summation Waveform: Illustrates PC stepping sequentially while `$t2` increments ($10 \to 30 \to 60 \to 100 \to 150$) and `mem_write` strobes at cycle 10, writing 150 into data memory address 0.*
+
+#### 2. Recursive Factorial ($5!$) Waveform
+![Recursive Factorial 5!](diagrams/09_wave_factorial.png)
+*Fig. 4. Factorial Waveform: Depicts branch and jump assertions altering PC flow across loop boundaries without pipeline bubbles, concluding with `$t2 = 120`.*
+
+#### 3. Synchronous Reset Waveform
+![Synchronous Reset](diagrams/10_wave_reset.png)
+*Fig. 5. Reset Waveform: Validates that asserting `reset` forces PC immediately to `0x00000000` and clears the internal register file and data memory synchronously.*
+
+#### 4. Jump & Memory Round-Trip Waveform
+![Jump Test and Memory Round-Trip](diagrams/11_wave_jump_test.png)
+*Fig. 6. Jump Waveform: Confirms PC jumping from `0x00000008` to `0x00000010` (skipping `0x0000000C`), followed by `SW` writing 14 to memory and `LW` restoring it.*
+
+#### 5. ALU Operations & Signed Boundary Waveform
+![ALU Operations](diagrams/12_wave_alu.png)
+*Fig. 7. ALU Waveform: Confirms arithmetic zero-crossing flags and sign-bit propagation during negative SLT boundary comparisons (`0x80000000 < 0x7FFFFFFF`).*
 
 ---
 
