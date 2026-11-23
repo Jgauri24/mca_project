@@ -1,7 +1,18 @@
 # Simulation artifacts
 *.vcd
 *.out
+sim/
 sim_*
 a.out
 .DS_Store
 
+# Synthesis artifacts
+synthesis/out/
+synthesis/vivado_reports/
+
+# LaTeX build files
+report/*.aux
+report/*.log
+report/*.bbl
+report/*.blg
+report/main.pdf

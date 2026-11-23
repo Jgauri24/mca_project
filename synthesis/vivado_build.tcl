@@ -8,8 +8,9 @@ set outdir  synthesis/vivado_reports
 file mkdir $outdir
 
 read_verilog {
-    alu.v alu_control.v branch_jump.v control_unit.v data_memory.v
-    instruction_memory.v mips_cpu.v pc.v register_file.v sign_extend.v
+    rtl/alu.v rtl/alu_control.v rtl/branch_jump.v rtl/control_unit.v
+    rtl/data_memory.v rtl/instruction_memory.v rtl/mips_cpu.v rtl/pc.v
+    rtl/register_file.v rtl/sign_extend.v
     synthesis/fpga_top.v
 }
 read_xdc synthesis/basys3.xdc

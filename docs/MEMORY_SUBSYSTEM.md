@@ -4,11 +4,11 @@ Instruction Memory and Data Memory for the 32-bit single-cycle MIPS CPU.
 
 | File | Purpose |
 |------|---------|
-| `instruction_memory.v` | 256 x 32-bit instruction ROM, combinational read, `$readmemh` init |
-| `instruction_memory.mem` | Sample program (8 instructions) |
-| `tb_instruction_memory.v` | Self-checking testbench (21 tests) |
-| `data_memory.v` | 256 x 32-bit data RAM, sync write, sync reset, combinational read |
-| `tb_data_memory.v` | Self-checking testbench (30 tests) |
+| `rtl/instruction_memory.v` | 256 x 32-bit instruction ROM, combinational read, `$readmemh` init |
+| `programs/instruction_memory.mem` | Sample program (8 instructions) |
+| `tb/tb_instruction_memory.v` | Self-checking testbench (21 tests) |
+| `rtl/data_memory.v` | 256 x 32-bit data RAM, sync write, sync reset, combinational read |
+| `tb/tb_data_memory.v` | Self-checking testbench (30 tests) |
 
 ## Addressing (both memories)
 
@@ -103,25 +103,18 @@ The program only uses opcodes that `control_unit.v` supports.
 
 ## Integration note
 
-`mips_cpu.v` (Member 1) instantiates `u_dmem` without connecting the
-`reset` port. In simulation the port floats to `z` and `if (reset)` evaluates
-as false, so the memory works but is never cleared. Member 1 can add
-`.reset (reset)` to the `u_dmem` instantiation to connect it. This branch does
-not change `mips_cpu.v`.
+`mips_cpu.v` connects the CPU `reset` to `u_dmem.reset`, so a processor reset
+clears all 256 data-memory words. `tb/tb_mips_cpu.v` checks this before every
+program.
 
 ## Running with Icarus Verilog
 
 ```bash
-iverilog -g2001 -Wall -o sim_imem instruction_memory.v tb_instruction_memory.v
-vvp sim_imem
-
-iverilog -g2001 -Wall -o sim_dmem data_memory.v tb_data_memory.v
-vvp sim_dmem
-
-gtkwave tb_data_memory.vcd   # optional waveform view
+make imem     # tb/tb_instruction_memory.v
+make dmem     # tb/tb_data_memory.v
 ```
 
-Run the commands from the repository root so `instruction_memory.mem` is found.
+Run the commands from the repository root so `programs/instruction_memory.mem` is found.
 
 ### Expected output (abridged)
 
