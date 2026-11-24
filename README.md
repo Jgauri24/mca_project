@@ -74,7 +74,7 @@ Documents: [Memory subsystem](docs/MEMORY_SUBSYSTEM.md) · [Verification](docs/V
 | Member | Area | Main files |
 |---|---|---|
 | Gauri Jindal | Control Unit & Processor Integration | `pc.v`, `control_unit.v`, `alu_control.v`, `branch_jump.v`, `mips_cpu.v` |
-| Sanchit Garg | Execution Unit | `alu.v`, `register_file.v`, `sign_extend.v` and their testbenches |
+| Sanchit Garg | Execution Unit and waveform analysis | `alu.v`, `register_file.v`, `sign_extend.v` and their testbenches, `docs/waveforms/` |
 | Manas Saxena | Memory Subsystem, reset fix, performance measurement, waveforms, report and presentation | `instruction_memory.v`, `data_memory.v`, `instruction_memory.mem`, their testbenches, `tb_performance.v`, `scripts/`, `report/`, `presentation/` |
 | Tanish Garg | System Verification & Synthesis | `tb_mips_cpu.v`, `docs/VERIFICATION.md`, `docs/SYNTHESIS_REPORT.md`, `synthesis/` |
 
