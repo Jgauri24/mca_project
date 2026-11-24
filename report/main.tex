@@ -58,7 +58,7 @@ executes four machine-code programs (array sum, maximum search, factorial and a
 jump/logic test); all 129 directed checks pass in Icarus Verilog. Measured
 dynamic instruction counts give a CPI of 1.00 against 3.71 for an equivalent
 multi-cycle design. Synthesis for a Xilinx Artix-7 device uses 4{,}190 LUTs and
-9{,}216 flip-flops, and placement with static timing analysis on a Gowin GW5AST
+9{,}216 flip-flops, and place-and-route with static timing analysis on a Gowin GW5AST
 FPGA gives a maximum operating frequency of \fmaxvalue.
 \end{abstract}
 
@@ -89,7 +89,7 @@ synthesize and analyse the design. The specific contributions are:
         waveform evidence of instruction execution;
   \item a quantitative performance study (instruction mix, cycles, CPI and
         execution time) against a multi-cycle baseline; and
-  \item FPGA synthesis and placement results, including resource
+  \item FPGA synthesis and place-and-route results, including resource
         utilization and maximum operating frequency.
 \end{itemize}
 
@@ -461,10 +461,10 @@ Yosys reports no structural problems (\texttt{check}: 0 problems). Table~\ref{ta
 gives the Artix-7 estimate. The flip-flop count is exactly
 $8{,}192$ (data memory, $256\times32$) $+ 992$ (registers \texttt{\$1}--\texttt{\$31};
 \texttt{\$0} is constant) $+ 32$ (PC) $=9{,}216$. Table~\ref{tab:gowin} gives the
-Gowin results after placement and the maximum frequency from nextpnr static
-timing analysis after placement and before routing, so the figure is
-approximate. The 50~MHz target is not met; the period is about 32.8~ns. The
-CPU was not run on a board.
+Gowin results and the maximum frequency from nextpnr static timing analysis
+after full routing. The 50~MHz target is just missed; the critical path is
+20.74~ns (8.84~ns of logic and 11.90~ns of routing). The CPU was not run on a
+board.
 
 \begin{table}[!tbp]
 \caption{Xilinx Artix-7 (xc7a35t) resource estimate, Yosys}
@@ -487,7 +487,7 @@ Block RAM & 0 & 50 & 0\% \\
 \end{table}
 
 \begin{table}[!tbp]
-\caption{Gowin GW5AST-138 placement results (nextpnr)}
+\caption{Gowin GW5AST-138 place-and-route results (nextpnr)}
 \label{tab:gowin}
 \centering
 \footnotesize
@@ -510,14 +510,14 @@ multiplexers. Removing the memory-wide reset and registering the read would
 map it to a single block RAM, but would require a multi-cycle or pipelined
 memory stage.
 
-\emph{Timing.} The expected critical path is the \texttt{lw} path: PC register,
-instruction ROM, register-file read, ALU address addition, data-memory read
-multiplexer, write-back multiplexer and register-file setup (the tool's path
-listing was not inspected). All of this must complete in one clock period,
-which limits the estimated maximum frequency to \fmaxvalue{}, about 32.8~ns
-against 800~ps in the idealized model of Section~IV-C. The Gowin run kept fewer
-register flip-flops than the Xilinx estimate (224 against 992); this was not
-investigated.
+\emph{Timing.} The nextpnr path report confirms that the critical path is the
+\texttt{lw} path: instruction-ROM output, ALU address adder, data-memory read
+multiplexers and the register-file write. It takes 20.74~ns (8.84~ns of logic
+and 11.90~ns of routing), which limits the maximum frequency to \fmaxvalue{}
+against 800~ps in the idealized model of Section~IV-C. Routing delay is larger
+than logic delay because the $256\times32$ data-memory read needs a deep tree
+of multiplexers. The Gowin run kept fewer register flip-flops than the Xilinx
+estimate (224 against 992); this was not investigated.
 
 \emph{Limitations.} The ISA subset has no shifts, multiply, \texttt{bne},
 \texttt{jal}/\texttt{jr} or byte accesses, and there are no exceptions. The

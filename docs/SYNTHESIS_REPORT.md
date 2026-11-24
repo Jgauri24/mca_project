@@ -49,7 +49,7 @@ yosys -p 'read_verilog rtl/*.v; synth -top mips_cpu; check; stat'
 
 ---
 
-# FPGA synthesis, placement timing and maximum frequency
+# FPGA synthesis, place-and-route and maximum frequency
 
 **Run date:** 2026-11-22  
 **Tools:** Yosys 0.71+post, nextpnr-himbaechel (Gowin), Icarus Verilog 13.0  
@@ -78,7 +78,7 @@ yosys -p 'read_verilog rtl/*.v; synth -top mips_cpu; check; stat'
 
 Flip-flops: 8,192 for data memory (256 x 32), 992 for registers `$1-$31` (`$0` is constant and removed) and 32 for the PC = 9,216.
 
-## 2. Gowin placement and static timing analysis (nextpnr)
+## 2. Gowin place-and-route and static timing analysis (nextpnr)
 
 Device: Gowin GW5AST-LV138FPG676AES (Sipeed Tang Mega 138K Pro), 50 MHz target clock, pins in [`synthesis/tang_mega_138k.cst`](../synthesis/tang_mega_138k.cst).
 
@@ -91,14 +91,14 @@ Device: Gowin GW5AST-LV138FPG676AES (Sipeed Tang Mega 138K Pro), 50 MHz target c
 | Block RAM (BSRAM, instruction ROM) | 1 | 340 | 0.3 % |
 | I/O (IOB) | 8 | 324 | 2.5 % |
 
-**Maximum frequency: 30.46 MHz** (period about 32.8 ns), from nextpnr static timing analysis after placement, with a 50 MHz target clock. The 50 MHz target is not met, so the board would be clocked at or below 30 MHz.
+**Maximum frequency: 48.23 MHz** after full routing (critical path 20.74 ns: 8.84 ns logic, 11.90 ns routing), against a 50 MHz target clock. The target is missed by about 3.5 %, so a board would be clocked at 48 MHz or below. The routing step took about 13 minutes. (The earlier placement-only estimate of 30.46 MHz was too pessimistic and is replaced by this result.)
 
-This figure is nextpnr's static timing estimate after placement, before routing, so it is approximate. A post-routing figure was not available when this report was written. Gowin LUTs have 4 inputs, so the wide memory multiplexers need more logic levels than on a Xilinx 6-input LUT device. The CPU has not been run on a real board. The Vivado script in `synthesis/` gives the Artix-7 post-route frequency where Vivado is available.
+The critical path starts at the instruction-ROM block RAM output, goes through the ALU adder (data address), through the data-memory read multiplexers, and ends at a register-file flip-flop: this is the load-word path. The CPU has not been run on a real board, and nextpnr's delay model is an estimate. Gowin LUTs have 4 inputs, so the wide memory multiplexers need more logic levels than on a Xilinx 6-input LUT device. The Vivado script in `synthesis/` gives the Artix-7 post-route frequency where Vivado is available.
 
 ## 3. Observations
 
 - **Data memory dominates the area.** `data_memory.v` clears all 256 words on reset and reads asynchronously. FPGA block RAM supports neither, so the memory is built from 8,192 flip-flops plus large read multiplexers. Removing the memory-wide reset and using a synchronous read would let it map to a single block RAM and cut the area by roughly 80 %.
-- **Critical path (expected).** In a single-cycle CPU the clock period must cover the whole LW path: PC -> instruction ROM -> register read -> ALU (address add) -> data memory read -> write-back mux -> register file setup. This is the expected longest path; the tool's path listing was not inspected. It is the main motivation for pipelining.
+- **Critical path (confirmed).** The nextpnr path report shows the load-word path: instruction ROM -> ALU address add -> data memory read multiplexers -> register-file write. Routing delay (11.90 ns) is larger than logic delay (8.84 ns). A single-cycle CPU must fit this whole path in one clock, which is the main motivation for pipelining.
 - A first attempt on the smaller GW2A-18 (Tang Primer 20K, 20,736 LUT4) did not fit: the design needs about 27.8k Gowin LUT4s because Gowin LUTs have 4 inputs (Xilinx LUT6 packs the same logic into 4.2k LUTs).
 - The Vivado script produces the official Xilinx utilisation and timing reports (`synthesis/vivado_reports/`) for the Basys3 board if Vivado is available.
 - The Gowin run kept 224 register-file flip-flops (8,446 in total) while the Xilinx estimate has 992 (9,216 in total). The reason was not investigated.

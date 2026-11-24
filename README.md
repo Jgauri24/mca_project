@@ -18,7 +18,7 @@ A 32-bit single-cycle MIPS processor written in Verilog-2001. Every instruction 
 - **Reset:** one active-high synchronous reset clears the PC, all 32 registers and all 256 data-memory words
 - **Verification:** self-checking testbenches for every module plus full-CPU program tests and reset checks
 - **Performance:** dynamic instruction mix, cycles and CPI measured in simulation and compared with a multi-cycle baseline
-- **Synthesis:** Yosys generic, Xilinx Artix-7 resource estimate and Gowin placement timing (Fmax 30.46 MHz); scripts in `synthesis/`
+- **Synthesis:** Yosys generic, Xilinx Artix-7 resource estimate and Gowin place-and-route timing (Fmax 48.23 MHz); scripts in `synthesis/`
 
 ---
 
@@ -135,7 +135,7 @@ The single-cycle design needs 3.7x fewer cycles, but every cycle must be long en
 
 ### Synthesis
 
-Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Gowin GW5AST-138 static timing after placement (before routing, approximate) gives **30.46 MHz** (period about 32.8 ns); not tested on a board. Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
+Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Gowin GW5AST-138 place-and-route (nextpnr, after routing) gives a **maximum frequency of 48.23 MHz** (critical path 20.74 ns: 8.84 ns logic, 11.90 ns routing; the 50 MHz target is just missed). Not tested on a board. Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
 
 ### Waveforms
 

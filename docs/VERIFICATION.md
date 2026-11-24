@@ -47,4 +47,4 @@ Icarus may report nonfatal sensitivity warnings for asynchronous array reads and
 
 ## Synthesis
 
-Synthesis results (generic Yosys cells, Xilinx Artix-7 LUT/FF estimate, and Gowin placement timing with maximum frequency) are in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md). Scripts are in [`synthesis/`](../synthesis/).
+Synthesis results (generic Yosys cells, Xilinx Artix-7 LUT/FF estimate, and Gowin place-and-route timing with maximum frequency) are in [SYNTHESIS_REPORT.md](SYNTHESIS_REPORT.md). Scripts are in [`synthesis/`](../synthesis/).
