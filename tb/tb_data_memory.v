@@ -3,7 +3,7 @@
 // Module: tb_data_memory
 // Description: Self-Checking Testbench for the Data Memory (RAM)
 // Standard: Verilog-2001
-// Lead: Member 3 (Memory Subsystem)
+// Lead: Manas Saxena (Memory Subsystem)
 // Coverage:
 //   - Write a value and read it back (100 @ 0, 200 @ 4)
 //   - Writes to different locations, reads of consecutive locations
@@ -113,7 +113,7 @@ module tb_data_memory;
         mem_write  = 1'b0;
 
         $display("==================================================================");
-        $display("Starting Data Memory Verification (Member 3)");
+        $display("Starting Data Memory Verification (Manas Saxena)");
         $display("==================================================================");
 
         // --------------------------------------------------------------------

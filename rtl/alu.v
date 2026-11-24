@@ -3,7 +3,7 @@
 // Module: alu
 // Description: 32-bit Arithmetic Logic Unit (ALU) for Single-Cycle MIPS CPU
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Supported Operations:
 //   4'b0000: Bitwise AND
 //   4'b0001: Bitwise OR

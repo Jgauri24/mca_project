@@ -1,7 +1,7 @@
 // ============================================================================
 // File: instruction_memory.mem
 // Description: Sample MIPS program for instruction_memory.v ($readmemh format)
-// Lead: Member 3 (Memory Subsystem)
+// Lead: Manas Saxena (Memory Subsystem)
 // Format: one 32-bit hexadecimal instruction per line, loaded from memory[0]
 // Uses only opcodes supported by control_unit.v (R-type, LW, SW, ADDI, BEQ, J)
 // ============================================================================

@@ -3,7 +3,7 @@
 // Module: tb_alu
 // Description: Comprehensive Self-Checking Testbench for 32-bit ALU
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Coverage:
 //   - All supported operations (ADD, SUB, AND, OR, SLT, Undefined)
 //   - Positive and negative numbers (Two's complement)
@@ -76,7 +76,7 @@ module tb_alu;
         test_id    = 0;
 
         $display("==================================================================");
-        $display("Starting ALU Comprehensive Verification (Member 2)");
+        $display("Starting ALU Comprehensive Verification (Sanchit Garg)");
         $display("==================================================================");
 
         // --------------------------------------------------------------------

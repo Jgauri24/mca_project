@@ -84,12 +84,12 @@
     <text x="30" y="12">Next PC</text>
   </g>
 
-  <!-- PC (Member 1) -->
+  <!-- PC (Gauri Jindal) -->
   <rect x="40" y="360" width="80" height="90" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
   <text x="80" y="402" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e3a8a">PC</text>
   <text x="80" y="424" text-anchor="middle" font-size="12" fill="#1e3a8a">pc.v</text>
 
-  <!-- Instruction memory (Member 3) -->
+  <!-- Instruction memory (Manas Saxena) -->
   <rect x="170" y="320" width="150" height="170" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
   <text x="245" y="385" text-anchor="middle" font-size="16" font-weight="bold" fill="#7c2d12">Instruction</text>
   <text x="245" y="405" text-anchor="middle" font-size="16" font-weight="bold" fill="#7c2d12">Memory</text>
@@ -97,7 +97,7 @@
   <text x="245" y="470" text-anchor="middle" font-size="11" fill="#7c2d12">instruction_memory.v</text>
   <text x="176" y="400" font-size="11" fill="#7c2d12">Addr</text>
 
-  <!-- Control unit (Member 1) -->
+  <!-- Control unit (Gauri Jindal) -->
   <rect x="430" y="40" width="180" height="130" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
   <text x="520" y="70" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3a8a">Control Unit</text>
   <text x="520" y="88" text-anchor="middle" font-size="11" fill="#1e3a8a">control_unit.v</text>
@@ -111,7 +111,7 @@
   <text x="625" y="79" font-size="12" fill="#2563eb">Branch</text>
   <text x="625" y="119" font-size="12" fill="#2563eb">Jump</text>
 
-  <!-- Branch / Jump logic (Member 1) -->
+  <!-- Branch / Jump logic (Gauri Jindal) -->
   <rect x="950" y="40" width="260" height="120" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
   <text x="1080" y="68" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e3a8a">Branch / Jump Logic</text>
   <text x="1080" y="86" text-anchor="middle" font-size="11" fill="#1e3a8a">branch_jump.v</text>
@@ -124,7 +124,7 @@
   <line x1="485" y1="404" x2="485" y2="386" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3"/>
   <text x="485" y="380" text-anchor="middle" font-size="12" fill="#2563eb">RegDst</text>
 
-  <!-- Register file (Member 2) -->
+  <!-- Register file (Sanchit Garg) -->
   <rect x="540" y="290" width="170" height="200" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
   <text x="625" y="390" text-anchor="middle" font-size="16" font-weight="bold" fill="#14532d">Register</text>
   <text x="625" y="408" text-anchor="middle" font-size="16" font-weight="bold" fill="#14532d">File</text>
@@ -138,7 +138,7 @@
   <line x1="625" y1="290" x2="625" y2="275" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3"/>
   <text x="625" y="285" text-anchor="middle" font-size="12" fill="#2563eb" dx="40">RegWrite</text>
 
-  <!-- Sign extend (Member 2) -->
+  <!-- Sign extend (Sanchit Garg) -->
   <ellipse cx="625" cy="565" rx="65" ry="27" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
   <text x="625" y="562" text-anchor="middle" font-size="13" font-weight="bold" fill="#14532d">Sign Extend</text>
   <text x="625" y="578" text-anchor="middle" font-size="10" fill="#14532d">16 → 32 bit</text>
@@ -149,19 +149,19 @@
   <line x1="805" y1="404" x2="805" y2="386" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3"/>
   <text x="805" y="380" text-anchor="middle" font-size="12" fill="#2563eb">ALUSrc</text>
 
-  <!-- ALU (Member 2) -->
+  <!-- ALU (Sanchit Garg) -->
   <polygon points="860,300 940,340 940,420 860,460 860,400 878,380 860,360" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
   <text x="905" y="385" text-anchor="middle" font-size="18" font-weight="bold" fill="#14532d">ALU</text>
   <text x="905" y="402" text-anchor="middle" font-size="10" fill="#14532d">alu.v</text>
 
-  <!-- ALU control (Member 1) -->
+  <!-- ALU control (Gauri Jindal) -->
   <rect x="830" y="560" width="140" height="55" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
   <text x="900" y="584" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">ALU Control</text>
   <text x="900" y="601" text-anchor="middle" font-size="10" fill="#1e3a8a">alu_control.v</text>
   <line x1="790" y1="588" x2="830" y2="588" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#b)"/>
   <text x="786" y="592" text-anchor="end" font-size="12" fill="#2563eb">ALUOp</text>
 
-  <!-- Data memory (Member 3) -->
+  <!-- Data memory (Manas Saxena) -->
   <rect x="1030" y="340" width="170" height="170" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
   <text x="1115" y="420" text-anchor="middle" font-size="16" font-weight="bold" fill="#7c2d12">Data Memory</text>
   <text x="1115" y="438" text-anchor="middle" font-size="12" fill="#7c2d12">256 × 32 RAM</text>
@@ -183,9 +183,9 @@
   <g transform="translate(20,665)" font-size="13" fill="#0f172a">
     <rect x="0" y="0" width="330" height="128" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
     <text x="12" y="22" font-weight="bold">Legend</text>
-    <rect x="12" y="34" width="18" height="14" fill="#dbeafe" stroke="#2563eb"/><text x="38" y="46">Member 1 – Control &amp; Integration</text>
-    <rect x="12" y="56" width="18" height="14" fill="#dcfce7" stroke="#16a34a"/><text x="38" y="68">Member 2 – Execution Unit</text>
-    <rect x="12" y="78" width="18" height="14" fill="#ffedd5" stroke="#ea580c"/><text x="38" y="90">Member 3 – Memory Subsystem</text>
+    <rect x="12" y="34" width="18" height="14" fill="#dbeafe" stroke="#2563eb"/><text x="38" y="46">Gauri Jindal – Control &amp; Integration</text>
+    <rect x="12" y="56" width="18" height="14" fill="#dcfce7" stroke="#16a34a"/><text x="38" y="68">Sanchit Garg – Execution Unit</text>
+    <rect x="12" y="78" width="18" height="14" fill="#ffedd5" stroke="#ea580c"/><text x="38" y="90">Manas Saxena – Memory Subsystem</text>
     <line x1="12" y1="110" x2="30" y2="110" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3"/><text x="38" y="114">Control signal (from Control Unit)</text>
   </g>
   </g>

@@ -5,7 +5,7 @@
 //              processor. Holds 256 x 32-bit words (1 KB). Used by LW / SW.
 // Standard: Verilog-2001
 // Reset: Active-high synchronous reset (clears every word to zero)
-// Lead: Member 3 (Memory Subsystem)
+// Lead: Manas Saxena (Memory Subsystem)
 //
 // Addressing:
 //   - Byte-addressed 32-bit interface (address comes from the ALU result).

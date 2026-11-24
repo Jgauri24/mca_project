@@ -3,7 +3,7 @@
 // Module: tb_register_file
 // Description: Comprehensive Self-Checking Testbench for 32x32-bit Register File
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Coverage:
 //   - Power-on state & Active-high synchronous reset
 //   - Register zero ($0) hardwired protection (read zero, ignore writes)
@@ -112,7 +112,7 @@ module tb_register_file;
         test_id    = 0;
 
         $display("==================================================================");
-        $display("Starting Register File Comprehensive Verification (Member 2)");
+        $display("Starting Register File Comprehensive Verification (Sanchit Garg)");
         $display("==================================================================");
 
         // --------------------------------------------------------------------

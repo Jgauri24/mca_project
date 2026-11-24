@@ -1,4 +1,4 @@
-# Memory Subsystem (Member 3)
+# Memory Subsystem (Manas Saxena)
 
 Instruction Memory and Data Memory for the 32-bit single-cycle MIPS CPU.
 
@@ -119,7 +119,7 @@ Run the commands from the repository root so `programs/instruction_memory.mem` i
 ### Expected output (abridged)
 
 ```
-Starting Instruction Memory Verification (Member 3)
+Starting Instruction Memory Verification (Manas Saxena)
 [PASS] Test 01 | Read addr 0 -> mem[0] | Addr=0x00000000 => Instr=0x20080005
 [PASS] Test 02 | Read addr 4 -> mem[1] | Addr=0x00000004 => Instr=0x2009000a
 [PASS] Test 03 | Read addr 8 -> mem[2] | Addr=0x00000008 => Instr=0x01095020
@@ -131,7 +131,7 @@ STATUS: ALL TESTS PASSED
 ```
 
 ```
-Starting Data Memory Verification (Member 3)
+Starting Data Memory Verification (Manas Saxena)
 [PASS] Test 03 | Write 100 @0, read @0 | Addr=0x00000000 MemRead=1 => Data=0x00000064 (100)
 [PASS] Test 04 | Write 200 @4, read @4 | Addr=0x00000004 MemRead=1 => Data=0x000000c8 (200)
 ...

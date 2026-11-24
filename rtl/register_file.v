@@ -3,7 +3,7 @@
 // Module: register_file
 // Description: 32x32-bit Dual-Read, Single-Write Register File
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Features:
 //   - 32 general-purpose registers, each 32 bits wide ($0 - $31)
 //   - Two asynchronous/combinational read ports (read_reg1, read_reg2)

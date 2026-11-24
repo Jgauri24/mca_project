@@ -3,7 +3,7 @@
 // Module: mips_cpu
 // Description: Top-Level 32-bit Single-Cycle MIPS Processor
 // Standard: Verilog-2001
-// Lead: Member 1 (Control Unit & Processor Integration)
+// Lead: Gauri Jindal (Control Unit & Processor Integration)
 // ============================================================================
 
 `timescale 1ns / 1ps
@@ -24,7 +24,7 @@ module mips_cpu (
     wire [31:0] pc_next;
     wire [31:0] instruction;
 
-    // Control Unit Signals (Member 1)
+    // Control Unit Signals (Gauri Jindal)
     wire        reg_dst;
     wire        reg_write;
     wire        alu_src;
@@ -35,22 +35,22 @@ module mips_cpu (
     wire        branch;
     wire        jump;
 
-    // Register File Wires (Member 2)
+    // Register File Wires (Sanchit Garg)
     wire [4:0]  write_reg_addr;
     wire [31:0] reg_write_data;
     wire [31:0] reg_read_data1;
     wire [31:0] reg_read_data2;
 
-    // Sign Extension Wires (Member 2)
+    // Sign Extension Wires (Sanchit Garg)
     wire [31:0] sign_extended_imm;
 
-    // ALU Control & ALU Wires (Member 1 & Member 2)
+    // ALU Control & ALU Wires (Gauri Jindal & Sanchit Garg)
     wire [3:0]  alu_control_signal;
     wire [31:0] alu_operand2;
     wire [31:0] alu_result;
     wire        alu_zero;
 
-    // Data Memory Wires (Member 3)
+    // Data Memory Wires (Manas Saxena)
     wire [31:0] mem_read_data;
 
     // Assign Debug Outputs
@@ -58,7 +58,7 @@ module mips_cpu (
     assign debug_instruction = instruction;
 
     // ========================================================================
-    // Member 1 Modules: PC & Fetch/Branch Control
+    // Gauri Jindal Modules: PC & Fetch/Branch Control
     // ========================================================================
 
     // 1. Program Counter Register
@@ -81,7 +81,7 @@ module mips_cpu (
     );
 
     // ========================================================================
-    // Member 3 Module: Instruction Memory
+    // Manas Saxena Module: Instruction Memory
     // ========================================================================
 
     instruction_memory u_imem (
@@ -90,7 +90,7 @@ module mips_cpu (
     );
 
     // ========================================================================
-    // Member 1 Modules: Control Logic
+    // Gauri Jindal Modules: Control Logic
     // ========================================================================
 
     // Main Control Unit
@@ -115,7 +115,7 @@ module mips_cpu (
     );
 
     // ========================================================================
-    // Member 2 Modules: Register File & Immediate Extension
+    // Sanchit Garg Modules: Register File & Immediate Extension
     // ========================================================================
 
     // RegDst Multiplexer: Select rd (15:11) for R-type or rt (20:16) for I-type
@@ -141,7 +141,7 @@ module mips_cpu (
     );
 
     // ========================================================================
-    // Member 2 Module: Arithmetic Logic Unit (ALU)
+    // Sanchit Garg Module: Arithmetic Logic Unit (ALU)
     // ========================================================================
 
     // ALUSrc Multiplexer: Select register rt or sign-extended immediate
@@ -157,7 +157,7 @@ module mips_cpu (
     );
 
     // ========================================================================
-    // Member 3 Module: Data Memory
+    // Manas Saxena Module: Data Memory
     // ========================================================================
 
     data_memory u_dmem (

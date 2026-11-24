@@ -3,7 +3,7 @@
 // Module: tb_instruction_memory
 // Description: Self-Checking Testbench for the Instruction Memory (ROM)
 // Standard: Verilog-2001
-// Lead: Member 3 (Memory Subsystem)
+// Lead: Manas Saxena (Memory Subsystem)
 // Coverage:
 //   - Reads at address 0, 4 and 8
 //   - Consecutive sequential fetch of the whole sample program (PC += 4)
@@ -82,7 +82,7 @@ module tb_instruction_memory;
         expected_prog[7] = 32'h0800_0007; // j    0x1C
 
         $display("==================================================================");
-        $display("Starting Instruction Memory Verification (Member 3)");
+        $display("Starting Instruction Memory Verification (Manas Saxena)");
         $display("==================================================================");
 
         // --------------------------------------------------------------------

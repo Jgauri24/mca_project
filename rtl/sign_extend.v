@@ -3,7 +3,7 @@
 // Module: sign_extend
 // Description: 16-bit to 32-bit Sign Extension Unit for MIPS Immediate Operands
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Operation:
 //   Replicates sign bit (bit 15) across the upper 16 bits of the 32-bit output.
 //   Preserves two's complement value for negative and positive immediates.

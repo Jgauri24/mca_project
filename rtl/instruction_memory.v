@@ -4,7 +4,7 @@
 // Description: Read-only Instruction Memory (ROM) for the 32-bit single-cycle
 //              MIPS processor. Holds 256 x 32-bit instructions (1 KB).
 // Standard: Verilog-2001
-// Lead: Member 3 (Memory Subsystem)
+// Lead: Manas Saxena (Memory Subsystem)
 //
 // Addressing:
 //   - The CPU presents a 32-bit BYTE address (the PC).

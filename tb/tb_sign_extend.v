@@ -3,7 +3,7 @@
 // Module: tb_sign_extend
 // Description: Comprehensive Self-Checking Testbench for Sign Extension Unit
 // Standard: Verilog-2001
-// Lead: Member 2 (Execution Unit)
+// Lead: Sanchit Garg (Execution Unit)
 // Coverage:
 //   - Positive 16-bit immediates (sign bit 15 = 0, zero-extended upper 16 bits)
 //   - Negative 16-bit immediates (sign bit 15 = 1, one-extended upper 16 bits)
@@ -62,7 +62,7 @@ module tb_sign_extend;
         test_id    = 0;
 
         $display("==================================================================");
-        $display("Starting Sign Extension Comprehensive Verification (Member 2)");
+        $display("Starting Sign Extension Comprehensive Verification (Sanchit Garg)");
         $display("==================================================================");
 
         // --------------------------------------------------------------------
