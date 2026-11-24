@@ -462,9 +462,9 @@ gives the Artix-7 estimate. The flip-flop count is exactly
 $8{,}192$ (data memory, $256\times32$) $+ 992$ (registers \texttt{\$1}--\texttt{\$31};
 \texttt{\$0} is constant) $+ 32$ (PC) $=9{,}216$. Table~\ref{tab:gowin} gives the
 Gowin results after placement and the maximum frequency from nextpnr static
-timing analysis. Full routing of the 133{,}064 connections did not complete in
-reasonable time, so the frequency uses nextpnr's estimated routing delays.
-The 50~MHz target is not met; the critical path is about 32.8~ns.
+timing analysis after placement and before routing, so the figure is
+approximate. The 50~MHz target is not met; the period is about 32.8~ns. The
+CPU was not run on a board.
 
 \begin{table}[!tbp]
 \caption{Xilinx Artix-7 (xc7a35t) resource estimate, Yosys}
@@ -510,13 +510,14 @@ multiplexers. Removing the memory-wide reset and registering the read would
 map it to a single block RAM, but would require a multi-cycle or pipelined
 memory stage.
 
-\emph{Timing.} The critical path is the \texttt{lw} path: PC register,
+\emph{Timing.} The expected critical path is the \texttt{lw} path: PC register,
 instruction ROM, register-file read, ALU address addition, data-memory read
-multiplexer, write-back multiplexer and register-file setup. All of this must
-complete in one clock period, which limits the maximum frequency to
-\fmaxvalue{}. The ideal 800~ps of the textbook model in Section~IV-C becomes
-about 32.8~ns on a 4-input-LUT FPGA, because the asynchronous $256\times32$
-data-memory read alone needs a deep tree of multiplexers.
+multiplexer, write-back multiplexer and register-file setup (the tool's path
+listing was not inspected). All of this must complete in one clock period,
+which limits the estimated maximum frequency to \fmaxvalue{}, about 32.8~ns
+against 800~ps in the idealized model of Section~IV-C. The Gowin run kept fewer
+register flip-flops than the Xilinx estimate (224 against 992); this was not
+investigated.
 
 \emph{Limitations.} The ISA subset has no shifts, multiply, \texttt{bne},
 \texttt{jal}/\texttt{jr} or byte accesses, and there are no exceptions. The
@@ -546,10 +547,11 @@ extension with their testbenches (\texttt{alu.v}, \texttt{register\_file.v},
 \texttt{sign\_extend.v}). \\
 Manas Saxena & Memory subsystem: instruction ROM, data RAM, sample program and
 testbenches; reset integration fix, jump/logic and performance testbenches,
-FPGA synthesis flow, waveform analysis, block diagrams, repository structure
-and documentation. \\
+waveform analysis, block diagrams, repository structure, documentation and
+presentation. \\
 Tanish Garg & System verification (\texttt{tb\_mips\_cpu.v}, end-to-end
-program tests) and the initial generic synthesis report. \\
+program tests), the generic synthesis report, and the FPGA synthesis flow
+(wrapper, constraints, Yosys and Vivado scripts). \\
 \bottomrule
 \end{tabular}}
 \end{table}

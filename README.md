@@ -75,8 +75,8 @@ Documents: [Memory subsystem](docs/MEMORY_SUBSYSTEM.md) · [Verification](docs/V
 |---|---|---|
 | Gauri Jindal | Control Unit & Processor Integration | `pc.v`, `control_unit.v`, `alu_control.v`, `branch_jump.v`, `mips_cpu.v` |
 | Sanchit Garg | Execution Unit | `alu.v`, `register_file.v`, `sign_extend.v` and their testbenches |
-| Manas Saxena | Memory Subsystem, integration fixes, performance, synthesis flow, waveforms, report | `instruction_memory.v`, `data_memory.v`, `instruction_memory.mem`, their testbenches, `tb_performance.v`, `synthesis/`, `scripts/`, `report/` |
-| Tanish Garg | System Verification & Synthesis | `tb_mips_cpu.v`, `docs/VERIFICATION.md`, `docs/SYNTHESIS_REPORT.md` |
+| Manas Saxena | Memory Subsystem, reset fix, performance measurement, waveforms, report and presentation | `instruction_memory.v`, `data_memory.v`, `instruction_memory.mem`, their testbenches, `tb_performance.v`, `scripts/`, `report/`, `presentation/` |
+| Tanish Garg | System Verification & Synthesis | `tb_mips_cpu.v`, `docs/VERIFICATION.md`, `docs/SYNTHESIS_REPORT.md`, `synthesis/` |
 
 ![Team and modules](docs/diagrams/02_team_modules.png)
 
@@ -135,7 +135,7 @@ The single-cycle design needs 3.7x fewer cycles, but every cycle must be long en
 
 ### Synthesis
 
-Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Gowin GW5AST-138 placement with static timing analysis gives a **maximum frequency of 30.46 MHz** (critical path ≈ 32.8 ns, set by the LW path through the asynchronous data-memory read). Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
+Yosys generic 22,625 cells (0 problems); Xilinx Artix-7 estimate 4,190 LUTs and 9,216 flip-flops (about 20 % of a Basys3). Gowin GW5AST-138 static timing after placement (before routing, approximate) gives **30.46 MHz** (period about 32.8 ns); not tested on a board. Details in [docs/SYNTHESIS_REPORT.md](docs/SYNTHESIS_REPORT.md).
 
 ### Waveforms
 

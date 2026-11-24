@@ -64,7 +64,7 @@
       <text x="20" y="136">tb_sign_extend.v</text><text x="250" y="136">11 / 11</text>
       <text x="20" y="168">tb_instruction_memory.v</text><text x="250" y="168">21 / 21</text>
       <text x="20" y="200">tb_data_memory.v</text><text x="250" y="200">30 / 30</text>
-      <text x="20" y="232" font-weight="bold">tb_mips_cpu.v</text><text x="250" y="232" font-weight="bold">6 / 6</text>
+      <text x="20" y="232" font-weight="bold">tb_mips_cpu.v</text><text x="250" y="232" font-weight="bold">18 / 18</text>
     </g>
     <g font-size="14" font-weight="bold" fill="#16a34a">
       <text x="370" y="72">PASS</text><text x="370" y="104">PASS</text><text x="370" y="136">PASS</text>

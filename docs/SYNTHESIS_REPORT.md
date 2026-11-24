@@ -91,13 +91,14 @@ Device: Gowin GW5AST-LV138FPG676AES (Sipeed Tang Mega 138K Pro), 50 MHz target c
 | Block RAM (BSRAM, instruction ROM) | 1 | 340 | 0.3 % |
 | I/O (IOB) | 8 | 324 | 2.5 % |
 
-**Maximum frequency: 30.46 MHz** (critical path about 32.8 ns), from nextpnr static timing analysis after placement, with a 50 MHz target clock. The 50 MHz target is not met, so the board would be clocked at or below 30 MHz.
+**Maximum frequency: 30.46 MHz** (period about 32.8 ns), from nextpnr static timing analysis after placement, with a 50 MHz target clock. The 50 MHz target is not met, so the board would be clocked at or below 30 MHz.
 
-This figure comes from post-placement timing, where routing delays are estimated by nextpnr. Full routing of this design (133,064 connections, mostly the data-memory read multiplexers) did not finish in a reasonable time on this device, so no post-route number is reported. Gowin LUTs have 4 inputs, so the wide memory multiplexers need many more logic levels than on a Xilinx 6-input LUT device; the Vivado script in `synthesis/` will give the Artix-7 post-route frequency where Vivado is available.
+This figure is nextpnr's static timing estimate after placement, before routing, so it is approximate. A post-routing figure was not available when this report was written. Gowin LUTs have 4 inputs, so the wide memory multiplexers need more logic levels than on a Xilinx 6-input LUT device. The CPU has not been run on a real board. The Vivado script in `synthesis/` gives the Artix-7 post-route frequency where Vivado is available.
 
 ## 3. Observations
 
 - **Data memory dominates the area.** `data_memory.v` clears all 256 words on reset and reads asynchronously. FPGA block RAM supports neither, so the memory is built from 8,192 flip-flops plus large read multiplexers. Removing the memory-wide reset and using a synchronous read would let it map to a single block RAM and cut the area by roughly 80 %.
-- **Critical path.** In a single-cycle CPU the clock period must cover the whole LW path: PC -> instruction ROM -> register read -> ALU (address add) -> data memory read -> write-back mux -> register file setup. This is why the maximum frequency is only about 30 MHz, and it is the main motivation for pipelining.
+- **Critical path (expected).** In a single-cycle CPU the clock period must cover the whole LW path: PC -> instruction ROM -> register read -> ALU (address add) -> data memory read -> write-back mux -> register file setup. This is the expected longest path; the tool's path listing was not inspected. It is the main motivation for pipelining.
 - A first attempt on the smaller GW2A-18 (Tang Primer 20K, 20,736 LUT4) did not fit: the design needs about 27.8k Gowin LUT4s because Gowin LUTs have 4 inputs (Xilinx LUT6 packs the same logic into 4.2k LUTs).
 - The Vivado script produces the official Xilinx utilisation and timing reports (`synthesis/vivado_reports/`) for the Basys3 board if Vivado is available.
+- The Gowin run kept 224 register-file flip-flops (8,446 in total) while the Xilinx estimate has 992 (9,216 in total). The reason was not investigated.
