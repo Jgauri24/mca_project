@@ -16,3 +16,4 @@ report/*.log
 report/*.bbl
 report/*.blg
 report/main.pdf
+~$*

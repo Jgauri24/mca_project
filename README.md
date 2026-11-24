@@ -149,6 +149,7 @@ Generated from the simulation VCD files by `scripts/plot_waveforms.py`.
 | ![](docs/waveforms/04_jump_logic.png) | **Jump/logic test:** `j` at 0x08 jumps to 0x10 and skips 0x0C; SUB/AND/OR/SLT results; SW/LW at address 4 |
 | ![](docs/waveforms/05_reset.png) | **Reset:** one reset pulse clears the PC, registers and data memory |
 | ![](docs/waveforms/06_alu.png) | **ALU testbench:** ADD, SUB, AND, OR, signed SLT and the Zero flag |
+| ![](docs/waveforms/07_gtkwave_cpu.png) | **GTKWave view of the full CPU run** (`sim/tb_mips_cpu.vcd`): array sum reaches 150, reset clears everything, then the maximum search reaches 89 |
 
 ---
 

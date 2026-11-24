@@ -367,7 +367,12 @@ takes the values 1, 5, 20, 60 and 120. In the jump test (Fig.~\ref{fig:wjump})
 the \texttt{j} at 0x08 changes the PC directly to 0x10, so the instruction at
 0x0C never executes; MemWrite and MemRead show the store of 14 to address 4 and
 the load that reads it back. Fig.~\ref{fig:wreset} confirms that one reset
-pulse clears the PC, the register file and the data memory. Fig.~\ref{fig:walu}
+pulse clears the PC, the register file and the data memory. Fig.~\ref{fig:gtkwave} is a screenshot of the same simulation opened in GTKWave
+(\texttt{tb\_mips\_cpu.vcd}): the first program raises \texttt{\$t2} to 30, 60,
+100 and 150 and stores 150 in \texttt{dmem\_word0}, the jump signal then holds
+the PC at the end loop, a second reset clears the registers and memory, and the
+maximum search follows with \texttt{\$t2} taking the values 12, 45 and 89 while
+the branch signal pulses. Fig.~\ref{fig:walu}
 shows the ALU unit test, including signed SLT and the Zero flag.
 
 \begin{figure*}[!tbp]
@@ -407,6 +412,14 @@ SW/LW at address 4.}
 \caption{Synchronous reset between two programs.}
 \label{fig:wreset}
 \end{figure}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=0.92\textwidth]{07_gtkwave_cpu.png}
+\caption{GTKWave view of the CPU simulation: array sum, reset, then maximum
+search, with control signals and registers.}
+\label{fig:gtkwave}
+\end{figure*}
 
 \begin{figure*}[!tbp]
 \centering
