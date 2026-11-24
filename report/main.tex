@@ -372,7 +372,16 @@ pulse clears the PC, the register file and the data memory. Fig.~\ref{fig:gtkwav
 100 and 150 and stores 150 in \texttt{dmem\_word0}, the jump signal then holds
 the PC at the end loop, a second reset clears the registers and memory, and the
 maximum search follows with \texttt{\$t2} taking the values 12, 45 and 89 while
-the branch signal pulses. Fig.~\ref{fig:walu}
+the branch signal pulses. Figs.~\ref{fig:galu}--\ref{fig:gdmem} show the unit testbenches of the ALU,
+the register file and the data memory in GTKWave. In the ALU run the control
+code steps through ADD (0010), SUB (0110), AND (0000), OR (0001) and SLT (0111)
+and the zero flag pulses when the result is 0. In the register-file run
+registers 1 to 9 are written with test patterns (for example \texttt{FFFFF6CE},
+\texttt{7FFFFFFF}, \texttt{80000000} and \texttt{CAFEBABE}) and read back
+through both read ports, while reading register 0 gives \texttt{00000000}. In
+the data-memory run reset is released, words are written at addresses 0, 4, 8,
+\texttt{C} and \texttt{3FC}, and the address-check signals stay high.
+Fig.~\ref{fig:walu}
 shows the ALU unit test, including signed SLT and the Zero flag.
 
 \begin{figure*}[!tbp]
@@ -419,6 +428,27 @@ SW/LW at address 4.}
 \caption{GTKWave view of the CPU simulation: array sum, reset, then maximum
 search, with control signals and registers.}
 \label{fig:gtkwave}
+\end{figure*}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=0.78\textwidth]{08_gtkwave_alu.png}
+\caption{GTKWave view of the ALU testbench (\texttt{tb\_alu}).}
+\label{fig:galu}
+\end{figure*}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=0.78\textwidth]{09_gtkwave_register_file.png}
+\caption{GTKWave view of the register-file testbench (\texttt{tb\_register\_file}).}
+\label{fig:grf}
+\end{figure*}
+
+\begin{figure*}[!tbp]
+\centering
+\includegraphics[width=0.78\textwidth]{10_gtkwave_data_memory.png}
+\caption{GTKWave view of the data-memory testbench (\texttt{tb\_data\_memory}).}
+\label{fig:gdmem}
 \end{figure*}
 
 \begin{figure*}[!tbp]

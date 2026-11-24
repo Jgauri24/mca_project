@@ -150,6 +150,9 @@ Generated from the simulation VCD files by `scripts/plot_waveforms.py`.
 | ![](docs/waveforms/05_reset.png) | **Reset:** one reset pulse clears the PC, registers and data memory |
 | ![](docs/waveforms/06_alu.png) | **ALU testbench:** ADD, SUB, AND, OR, signed SLT and the Zero flag |
 | ![](docs/waveforms/07_gtkwave_cpu.png) | **GTKWave view of the full CPU run** (`sim/tb_mips_cpu.vcd`): array sum reaches 150, reset clears everything, then the maximum search reaches 89 |
+| ![](docs/waveforms/08_gtkwave_alu.png) | **GTKWave: ALU testbench** with the control codes for ADD, SUB, AND, OR and SLT and the zero flag |
+| ![](docs/waveforms/09_gtkwave_register_file.png) | **GTKWave: register-file testbench**, writes to registers 1 to 9 and reads through both ports |
+| ![](docs/waveforms/10_gtkwave_data_memory.png) | **GTKWave: data-memory testbench**, reset, writes at addresses 0, 4, 8, C and 3FC, and the address-check signals |
 
 ---
 
